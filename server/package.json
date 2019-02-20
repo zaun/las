@@ -1,0 +1,39 @@
+{
+  "name": "backend-server",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "gulp buildAPI",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "mkdir -p ./temp ; node local"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dynamoose": "^1.5.0",
+    "fantasy-names": "^2.0.0",
+    "jsonwebtoken": "^8.2.1",
+    "lodash": "^4.17.5",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "aws-sdk": "2.395.0",
+    "babel-core": "6.24.0",
+    "babel-loader": "6.4.1",
+    "babel-preset-latest-node": "^1.0.0",
+    "body-parser": "^1.18.2",
+    "dynamodb-local": "^0.0.22",
+    "express": "^4.16.3",
+    "gulp": "*",
+    "gulp-clean": "*",
+    "gulp-copy": "*",
+    "gulp-load-plugins": "*",
+    "gulp-install": "*",
+    "gulp-zip": "*",
+    "require-directory": "^2.1.1",
+    "s3rver": "2.2.8",
+    "webpack": "2.3.2",
+    "webpack-dev-server": "2.4.2",
+    "webpack-stream": "2.3.0"
+  }
+}
