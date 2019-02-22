@@ -64,4 +64,34 @@ export default class App extends Vue {
     page-break-inside: avoid
   }
 }
+.min-1 {
+  min-width: 1em;
+}
+.min-2 {
+  min-width: 2em;
+}
+.min-3 {
+  min-width: 3em;
+}
+.min-4 {
+  min-width: 4em;
+}
+.min-5 {
+  min-width: 5em;
+}
+.max-1 {
+  max-width: 1em;
+}
+.max-2 {
+  max-width: 2em;
+}
+.max-3 {
+  max-width: 3em;
+}
+.max-4 {
+  max-width: 4em;
+}
+.max-5 {
+  max-width: 5em;
+}
 </style>

@@ -16,6 +16,8 @@ export const state: SessionState = {
   originalTemplate: null,
   template: null,
   searchResults: null,
+
+  themeColor: 'teal',
 };
 
 const namespaced: boolean = true;
@@ -264,6 +266,10 @@ export const mutations: MutationTree<SessionState> = {
 };
 
 export const getters: GetterTree<SessionState, RootState> = {
+  themeColor(s: SessionState): string {
+    return s.themeColor;
+  },
+
   isEditMode(s: SessionState): boolean {
     return s.mode === SessionViewEnum.EDIT;
   },

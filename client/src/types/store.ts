@@ -30,6 +30,8 @@ export interface SessionState {
   originalTemplate: null;
   template: null;
   searchResults: null;
+
+  themeColor: string;
 }
 
 export interface APIState {

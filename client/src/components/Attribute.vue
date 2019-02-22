@@ -2,6 +2,13 @@
   .spacer.my-3.pb-2.px-5(v-if="template === 'spacer'")
     v-divider
 
+  AttributeArmedForces(v-else-if="template === 'aremedforces'"
+                  :label="label"
+                  :disabled="disabled"
+                  :readonly="readonly"
+                  :value="value"
+                  @input="onInput")
+
   AttributeDate(v-else-if="template === 'date'"
                 :label="label"
                 :disabled="disabled"
@@ -46,13 +53,6 @@
                   :value="value"
                   @input="onInput")
 
-  AttributeUSArmedForces(v-else-if="template === 'usaremedforces'"
-                  :label="label"
-                  :disabled="disabled"
-                  :readonly="readonly"
-                  :value="value"
-                  @input="onInput")
-
   .spacer(v-else) {{ template }}
 
 </template>
@@ -65,7 +65,7 @@ import AttributeName from '@/components/AttributeName.vue';
 import AttributeOptions from '@/components/AttributeOptions.vue';
 import AttributeNumber from '@/components/AttributeNumber.vue';
 import AttributeString from '@/components/AttributeString.vue';
-import AttributeUSArmedForces from '@/components/AttributeUSArmedForces.vue';
+import AttributeArmedForces from '@/components/AttributeArmedForces.vue';
 
 @Component({
   components: {
@@ -75,7 +75,7 @@ import AttributeUSArmedForces from '@/components/AttributeUSArmedForces.vue';
     AttributeOptions,
     AttributeNumber,
     AttributeString,
-    AttributeUSArmedForces
+    AttributeArmedForces
   },
 })
 export default class Attribute extends Vue {

@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-toolbar.no-print(dense app)
+  v-toolbar.no-print(app dense dark :color="themeColor + ' accent-4'")
     v-toolbar-title L.A.S.
     v-spacer
     v-text-field(v-if="!isSearchPage && !isEditMode" v-model="searchTerm" append-icon="mdi-magnify" @change="doSearch")
@@ -78,6 +78,10 @@ export default class Header extends Vue {
   private searchTerm: string = '';
 
   // Computed Properties
+  private get themeColor() {
+    return this.$store.getters['session/themeColor'];
+  }
+
   private get isAuthed() {
     return this.$store.getters['cognito/isLoggedIn'];
   }

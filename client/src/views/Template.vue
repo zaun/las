@@ -8,73 +8,65 @@
     v-layout(v-if="template != null" wrap)
       v-flex.px-2.mb-3(lg5)
         v-card.elevation-5
-          v-toolbar.elevation-0(dense)
+          v-toolbar.elevation-0(dense :color="themeColor + ' accent-1'")
             v-toolbar-title.headline Attributes
             v-spacer
-            v-btn(v-if="isEditMode" @click.stop="addAttribute" fab flat small)
+            v-btn(v-if="isEditMode" @click.stop="addAttribute" fab text small)
               v-icon mdi-plus-circle
           v-card-text(v-if="!isEditMode")
-            v-data-table(:headers="attributeHeaders" :items="attributes" hide-actions)
-              template(slot="items" slot-scope="props")
-                td.body-1 {{ props.item.name }}
-                td.body-1.typeHeader {{ attributeName(props.item.type) }}
-                td.pa-1.td-icon.text-xs-center
-                  v-icon(v-if="props.item.deprecated") mdi-checkbox-blank-outline
-                  v-icon(v-if="!props.item.deprecated") mdi-checkbox-marked-outline
+            v-list
+              template(v-for="(item, index) in attributes")
+                v-list-tile(:key="item.id" :disabled="item.deprecated" avatar)
+                  v-list-tile-avatar.min-1.pr-2
+                    v-icon(:title="attributeName(item.type)") {{ attributeIcon(item.type) }}
+                  v-list-tile-content(v-if="item.type !== 'spacer'") {{ item.name }}
+                  v-divider(v-if="item.type === 'spacer'")
           v-card-text(v-if="isEditMode")
-            v-data-table(:headers="attributeHeaders" :items="attributes" @reorder="dragReorderAttribute" v-sortable:handle hide-actions)
-              template(slot="items" slot-scope="props")
-                tr.sortableRow(:key="props.item.id")
-                  td.pa-1.td-icon.text-xs-center
-                    v-icon.handle(small) mdi-reorder-horizontal
-                  td.pa-1
-                    v-text-field.pa-0.mr-1(:value="props.item.name" @input="setAttribute(props.item, 'name', $event)" :disabled="props.item.deprecated || props.item.type === 'spacer'" :counter="attributeCount(props.item.type)")
-                  td.pa-1.typeHeader
-                    v-select.pa-0(:value="props.item.type" @input="setAttribute(props.item, 'type', $event)" :items="attributeTypes" :disabled="props.item.deprecated || !props.item.new" dense)
-                  td.pa-1.td-icon.text-xs-center
-                    v-btn(small fab flat :disabled="!attributeHasOptions(props.item.type)" @click="doShowAttributeOptions(props.item)")
-                      v-icon(small) mdi-tune
-                  td.pa-1.td-checkbox.text-xs-center
-                    v-checkbox.pa-0.ma-o(:input-value="!props.item.deprecated" @click.stop="deprecateAttributeToggle(props.item)" hide-details)
+            v-list(v-sortable:handle @reorder="dragReorderAttribute")
+              template(v-for="(item, index) in attributes")
+                v-list-tile(:key="item.id" avatar)
+                  v-list-tile-avatar.min-1.pr-2
+                    v-icon.handle(:title="attributeName(item.type)") {{ attributeIcon(item.type) }}
+                  v-text-field.pa-0.mr-1(v-if="item.type !== 'spacer'" :value="item.name" @input="setAttribute(item, 'name', $event)" :disabled="item.deprecated" :counter="attributeCount(item.type)")
+                  v-divider(v-if="item.type === 'spacer'")
+                  v-list-tile-avatar.min-1(v-if="item.type !== 'spacer'")
+                    v-icon(v-if="attributeHasOptions(item.type)" @click="doShowAttributeOptions(item)") mdi-tune
+                  v-list-tile-avatar.min-1(v-if="item.type !== 'spacer'")
+                    v-icon(v-if="item.deprecated" @click.stop="deprecateAttributeToggle(item)") mdi-checkbox-blank-outline
+                    v-icon(v-if="!item.deprecated" @click.stop="deprecateAttributeToggle(item)") mdi-checkbox-marked-outline
 
       v-flex.px-2(lg7)
         v-card.elevation-5
-          v-toolbar.elevation-0(dense)
+          v-toolbar.elevation-0(dense :color="themeColor + ' accent-1'")
             v-toolbar-title.headline Sections
             v-spacer
-            v-btn(v-if="isEditMode" @click.stop="addSection" fab flat small)
+            v-btn(v-if="isEditMode" @click.stop="addSection" fab text small)
               v-icon mdi-plus-circle
           v-card-text(v-if="!isEditMode")
-            v-data-table(:headers="sectionHeaders" :items="sections" hide-actions)
-              template(slot="items" slot-scope="props")
-                td.body-1.td-header {{ props.item.header == 1 ? '|' : '||' }}
-                td.body-1 {{ props.item.name }}
-                td.body-1.typeHeader {{ sectionName(props.item.type) }}
-                td.body-1.td-size {{ sectionSize(props.item.size) }}
-                td.pa-1.td-icon.text-xs-center
-                  v-icon(v-if="props.item.deprecated") mdi-checkbox-blank-outline
-                  v-icon(v-if="!props.item.deprecated") mdi-checkbox-marked-outline
+            v-list
+              template(v-for="(item, index) in sections")
+                v-list-tile(:key="item.id" :disabled="item.deprecated" avatar)
+                  v-list-tile-avatar.min-1.pr-2
+                    v-icon(:title="sectionName(item.type)") {{ sectionIcon(item.type) }}
+                  span.text-xs-center.min-1 {{ item.header == 1 ? 'I' : 'II' }}
+                  v-list-tile-content {{ item.name }}
+                  span.ml-2.text-xs-center.min-4 {{ sectionSize(item.size) }}
           v-card-text(v-if="isEditMode")
-            v-data-table(:headers="sectionHeaders" :items="sections" @reorder="dragReorderSection" v-sortable:handle hide-actions)
-              template(slot="items" slot-scope="props")
-                tr.sortableRow
-                  td.pa-1.td-icon
-                    v-icon.handle(small) mdi-reorder-horizontal
-                  td.pa-1.td-icon
-                    v-btn(icon @click="toggleHeader(props.item)")
-                      span(v-if="props.item.header == 1") I
-                      span(v-if="props.item.header == 2") II
-                  td.pa-1
-                    v-text-field.pa-0.mr-1(:value="props.item.name" @input="setSection(props.item, 'name', $event)" :disabled="props.item.deprecated" :counter="sectionCount(props.item.type)")
-                  td.pa-1.typeHeader
-                    v-select.pa-0(:value="props.item.type" @input="setSection(props.item, 'type', $event)" :items="sectionTypes" :disabled="props.item.deprecated || !props.item.new" dense)
-                  td.pa-1.td-size
-                    v-select.pa-0(:value="props.item.size" @input="setSection(props.item, 'size', $event)" :items="sectionSizes" :disabled="props.item.deprecated" dense)
-                  td.pa-1.td-icon.text-xs-center
-                    v-btn(small fab flat :disabled="!sectionHasOptions(props.item.type)" @click="doShowSectionOptions(props.item)")
-                      v-icon(small) mdi-tune
-                  td.pa-1.td-checkbox.text-xs-center
-                    v-checkbox(:input-value="!props.item.deprecated" @click.stop="deprecateSectionToggle(props.item)"  hide-details)
+            v-list(v-sortable:handle @reorder="dragReorderSection")
+              template(v-for="(item, index) in sections")
+                v-list-tile(:key="item.id" avatar)
+                  v-list-tile-avatar.min-1.pr-2
+                    v-icon.handle(:title="sectionName(item.type)") {{ sectionIcon(item.type) }}
+                  v-btn.min-1.mr-2(icon @click="toggleHeader(item)" :disabled="item.deprecated")
+                    span(v-if="item.header == 1") I
+                    span(v-if="item.header == 2") II
+                  v-text-field.pa-0.mx-2(:value="item.name" @input="setSection(item, 'name', $event)" :disabled="item.deprecated" :counter="sectionCount(item.type)")
+                  v-select.pa-0.max-5(:value="item.size" @input="setSection(item, 'size', $event)" :items="sectionSizes" :disabled="item.deprecated" dense)
+                  v-list-tile-avatar.min-1
+                    v-icon(v-if="sectionHasOptions(item.type)" @click="doShowSectionOptions(item)") mdi-tune
+                  v-list-tile-avatar.min-1
+                    v-icon(v-if="item.deprecated" @click.stop="deprecateSectionToggle(item)") mdi-checkbox-blank-outline
+                    v-icon(v-if="!item.deprecated" @click.stop="deprecateSectionToggle(item)") mdi-checkbox-marked-outline
 
     v-dialog(v-model="showAttributeOptions" v-if="currentAttribute != null", persistent, width=450)
       v-card
@@ -139,20 +131,20 @@ import { cloneDeep, find, maxBy } from 'lodash';
 @Component
 export default class Template extends Vue {
   attributeTypes: Array<object> = [
-    { text: 'Date', value: 'date' },
-    { text: 'Duration', value: 'duration' },
-    { text: 'Image', value: 'image' },
-    { text: 'Name', value: 'name' },
-    { text: 'Number', value: 'number' },
-    { text: 'Options', value: 'options', options: true },
-    { text: 'Spacer', value: 'spacer' },
-    { text: 'Text', value: 'string' },
-    { text: 'U.S. Armed Forces', value: 'usaremedforces' }
+    { text: 'Date', value: 'date', icon: 'mdi-calendar' },
+    { text: 'Duration', value: 'duration', icon: 'mdi-timer-10' },
+    { text: 'Image', value: 'image', icon: 'mdi-image' },
+    { text: 'Name', value: 'name', icon: 'mdi-account-card-details' },
+    { text: 'Number', value: 'number', icon: 'mdi-numeric' },
+    { text: 'Options', value: 'options', icon: 'mdi-check-box-multiple-outline', options: true },
+    { text: 'Spacer', value: 'spacer', icon: 'mdi-minus' },
+    { text: 'Text', value: 'string', icon: 'mdi-format-text' },
+    { text: 'Armed Forces', value: 'aremedforces', icon: 'mdi-tank' }
   ];
 
   sectionTypes: Array<object> = [
-    { text: 'Data Table', value: 'datatable', options: true  },
-    { text: 'Text', value: 'text' },
+    { text: 'Data Table', value: 'datatable', icon: 'mdi-table-large', options: true  },
+    { text: 'Text', value: 'text', icon: 'mdi-format-text' },
   ];
 
   sectionSizes: Array<object> = [
@@ -167,6 +159,10 @@ export default class Template extends Vue {
   private temp = {};
 
   // Computed Properties
+  private get themeColor() {
+    return this.$store.getters['session/themeColor'];
+  }
+
   private get attributes() {
     return this.template.attributes;
   }
@@ -275,6 +271,14 @@ export default class Template extends Vue {
     return type;
   }
 
+  private attributeIcon(type: string) {
+    const attr = find(this.attributeTypes, { value: type });
+    if (attr) {
+      return attr.icon;
+    }
+    return type;
+  }
+
   private attributeHasOptions(type: string) {
     const attr = find(this.attributeTypes, { value: type });
     if (attr) {
@@ -329,6 +333,14 @@ export default class Template extends Vue {
     const section = find(this.sectionTypes, { value: type });
     if (section) {
       return section.text;
+    }
+    return type;
+  }
+
+  private sectionIcon(type: string) {
+    const section = find(this.sectionTypes, { value: type });
+    if (section) {
+      return section.icon;
     }
     return type;
   }
@@ -388,55 +400,55 @@ export default class Template extends Vue {
 </script>
 
 <style lang="scss">
-.td-icon {
-  width: 1em;
-  text-align: center;
-}
-.td-checkbox {
-  width: 1em;
-  .v-input {
-    justify-content: center;
-  }
-}
-.td-size {
-  width: 5em;
-  text-align: center;
-}
-.td-header {
-  width: 3em;
-  text-align: center;
-}
-.typeHeader {
-  width: 13em;
-}
-table.v-table thead td:not(:nth-child(1)), table.v-table tbody td:not(:nth-child(1)), table.v-table thead th:not(:nth-child(1)), table.v-table tbody th:not(:nth-child(1)), table.v-table thead td:first-child, table.v-table tbody td:first-child, table.v-table thead th:first-child, table.v-table tbody th:first-child {
-  padding: 0px;
-}
-.v-btn--small {
-  padding: 0;
-  margin: 0;
-  width: 20px !important;
-  height: 20px !important;
-}
-.v-input {
-  font-size: 14px !important;
-  input {
-    padding: 4px 0 4px
-  }
-  .v-input--selection-controls__input {
-    margin: 0px
-  }
-}
-.handle {
-  cursor: move;
-}
-.v-select {
-  font-size: 14px !important;
-  input {
-    padding: 4px 0 4px
-  }
-  .v-select__selection {
-    margin: 4px 0 4px
-  }
-}
+// .td-icon {
+//   width: 1em;
+//   text-align: center;
+// }
+// .td-checkbox {
+//   width: 1em;
+//   .v-input {
+//     justify-content: center;
+//   }
+// }
+// .td-size {
+//   width: 5em;
+//   text-align: center;
+// }
+// .td-header {
+//   width: 3em;
+//   text-align: center;
+// }
+// .typeHeader {
+//   width: 13em;
+// }
+// table.v-table thead td:not(:nth-child(1)), table.v-table tbody td:not(:nth-child(1)), table.v-table thead th:not(:nth-child(1)), table.v-table tbody th:not(:nth-child(1)), table.v-table thead td:first-child, table.v-table tbody td:first-child, table.v-table thead th:first-child, table.v-table tbody th:first-child {
+//   padding: 0px;
+// }
+// .v-btn--small {
+//   padding: 0;
+//   margin: 0;
+//   width: 20px !important;
+//   height: 20px !important;
+// }
+// .v-input {
+//   font-size: 14px !important;
+//   input {
+//     padding: 4px 0 4px
+//   }
+//   .v-input--selection-controls__input {
+//     margin: 0px
+//   }
+// }
+// .handle {
+//   cursor: move;
+// }
+// .v-select {
+//   font-size: 14px !important;
+//   input {
+//     padding: 4px 0 4px
+//   }
+//   .v-select__selection {
+//     margin: 4px 0 4px
+//   }
+// }
 </style>

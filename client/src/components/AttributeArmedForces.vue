@@ -19,7 +19,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
     AttributeOptions,
   },
 })
-export default class AttributeUSArmedForces extends Vue {
+export default class AttributeArmedForces extends Vue {
   @Prop({ default: '' })
   public label!: string;
   @Prop({ default: false })
@@ -32,18 +32,18 @@ export default class AttributeUSArmedForces extends Vue {
   public value!: string;
 
   private items = [
-    'Army',
-    'Marine Corps',
-    'Navy',
-    'Air Force',
-    'Coast Guard',
-    'Army National Guard',
-    'Army Reserve',
-    'Marine Corps Reserve',
-    'Navy Reserve',
-    'Air National Guard',
-    'Air Force Reserve',
-    'Coast Guard Reserve'
+    'U.S. Army',
+    'U.S. Marine Corps',
+    'U.S. Navy',
+    'U.S. Air Force',
+    'U.S. Coast Guard',
+    'U.S. Army National Guard',
+    'U.S. Army Reserve',
+    'U.S. Marine Corps Reserve',
+    'U.S. Navy Reserve',
+    'U.S. Air National Guard',
+    'U.S. Air Force Reserve',
+    'U.S. Coast Guard Reserve'
   ]
 
   // Methods
