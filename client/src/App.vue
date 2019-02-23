@@ -9,11 +9,11 @@
       @show-upload-media="showUploadMediaDialog = true"
     )
     
-    AuthDialog(v-model="showAuthDialog")
-    DirtyDialog(v-model="showDirtyDialog")
-    NewDocument(v-model="showNewDocument")
-    NewTemplate(v-model="showNewTemplate")
-    UploadMedia(v-model="showUploadMediaDialog")
+    DialogAuth(v-model="showAuthDialog")
+    DialogDirty(v-model="showDirtyDialog")
+    DialogNewDocument(v-model="showNewDocument")
+    DialogNewTemplate(v-model="showNewTemplate")
+    DialogUploadMedia(v-model="showUploadMediaDialog")
 
     v-container.my-3
       router-view
@@ -23,23 +23,23 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import AuthDialog from '@/components/AuthDialog.vue';
-import DirtyDialog from '@/components/DirtyDialog.vue';
+import DialogAuth from '@/components/Dialogs/DialogAuth.vue';
+import DialogDirty from '@/components/Dialogs/DialogDirty.vue';
+import DialogNewDocument from '@/components/Dialogs/DialogNewDocument.vue';
+import DialogNewTemplate from '@/components/Dialogs/DialogNewTemplate.vue';
+import DialogUploadMedia from '@/components/Dialogs/DialogUploadMedia.vue';
 import Footer from '@/components/Footer.vue';
 import Header from '@/components/Header.vue';
-import NewDocument from '@/components/NewDocument.vue';
-import NewTemplate from '@/components/NewTemplate.vue';
-import UploadMedia from '@/components/UploadMedia.vue';
 
 @Component({
   components: {
-    AuthDialog,
-    DirtyDialog,
+    DialogAuth,
+    DialogDirty,
+    DialogNewDocument,
+    DialogNewTemplate,
+    DialogUploadMedia,
     Footer,
     Header,
-    NewDocument,
-    NewTemplate,
-    UploadMedia,
   },
 })
 export default class App extends Vue {
@@ -64,6 +64,7 @@ export default class App extends Vue {
     page-break-inside: avoid
   }
 }
+
 .min-1 {
   min-width: 1em;
 }

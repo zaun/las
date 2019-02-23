@@ -99,7 +99,7 @@ enum DialogMode {
 }
 
 @Component
-export default class AuthDialog extends Vue {
+export default class DialogAuth extends Vue {
   @Prop({ default: false })
   public value!: boolean;
   @Prop({ default: '' })

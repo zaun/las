@@ -1,7 +1,9 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=450)
     v-card
-      v-card-title.title {{ title }}
+      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+        v-toolbar-title {{ title }}
+      v-divider
       v-card-text.body-1 There are unsaved changes. Closing the document without saving
         | will cause all changes to be lost. Do you wish to continue without saving?
       v-divider
@@ -15,11 +17,15 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
-export default class DirtyDialog extends Vue {
+export default class DialogDirty extends Vue {
   @Prop({ default: '' })
-  public value!: string;
+  public value!: bool;
 
   // Computed Properties
+  private get themeColor() {
+    return this.$store.getters['session/themeColor'];
+  }
+
   private get isDocumentPage() {
     return this.$store.state.route.name === 'document';
   }

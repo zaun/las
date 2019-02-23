@@ -12,7 +12,8 @@ getS3 = function() {
     s3Config = {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,
-      endpoint: config.s3Endpoint
+      endpoint: config.s3Endpoint,
+      s3ForcePathStyle: true
     };
   }
   return new AWS.S3(s3Config);

@@ -16,16 +16,20 @@
         section.mb-3(v-for="section in template.sections")
           Content(v-if="section.data || !section.deprecated" :type="section.type" :header="section.header" :label="section.name" :data="section.data" :readonly="!isEditMode" :value="sectionValue(section.id)" @input="setSection(section.id, $event)")
 
-    v-layout(v-if="!document || !template" wrap)
+    v-layout(v-if="(!document || !template) && !notFound" wrap)
       v-flex.text-xs-center(align-center justify-center row)
         v-progress-circular(:width="2" :size="90" indeterminate)
           v-progress-circular(:width="2" :size="75" indeterminate) Loading
+
+    v-layout(v-if="(!document || !template) && notFound" wrap)
+      v-flex.text-xs-center(align-center justify-center row)
+        | 404
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import Attribute from '@/components/Attribute.vue';
-import Content from '@/components/Content.vue';
+import Attribute from '@/components/Attribute/Attribute.vue';
+import Content from '@/components/Content/Content.vue';
 
 @Component({
   components: {
@@ -34,6 +38,9 @@ import Content from '@/components/Content.vue';
   },
 })
 export default class Document extends Vue {
+
+  private notFound = false;
+
   // Computed Properties
   private get document() {
     return this.$store.state.session.document;
@@ -48,8 +55,13 @@ export default class Document extends Vue {
   }
   
   @Watch('$route', { immediate: true, deep: true })
-  private searchDocuments() {
-    this.$store.dispatch('session/loadDocument', this.$route.params.title);
+  private fetchDocuments() {
+    this.$store.dispatch('session/loadDocument', this.$route.params.title).then((ok) => {
+      this.notFound = false;
+      if (!ok) {
+        this.notFound = true;
+      }
+    });
   }
 
   private attribueValue(id: string) {

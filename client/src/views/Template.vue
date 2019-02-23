@@ -1,9 +1,13 @@
 <template lang="pug">
   v-container
-    v-layout(v-if="!template" wrap)
+    v-layout(v-if="!template && !notFound" wrap)
       v-flex.text-xs-center(align-center justify-center row)
         v-progress-circular(:width="2" :size="90" indeterminate)
           v-progress-circular(:width="2" :size="75" indeterminate) Loading
+
+    v-layout(v-if="!template && notFound" wrap)
+      v-flex.text-xs-center(align-center justify-center row)
+        | 404
 
     v-layout(v-if="template != null" wrap)
       v-flex.px-2.mb-3(lg5)
@@ -11,7 +15,7 @@
           v-toolbar.elevation-0(dense :color="themeColor + ' accent-1'")
             v-toolbar-title.headline Attributes
             v-spacer
-            v-btn(v-if="isEditMode" @click.stop="addAttribute" fab text small)
+            v-btn(v-if="isEditMode" @click.stop="showNewAttribute = true" fab text small)
               v-icon mdi-plus-circle
           v-card-text(v-if="!isEditMode")
             v-list
@@ -40,7 +44,7 @@
           v-toolbar.elevation-0(dense :color="themeColor + ' accent-1'")
             v-toolbar-title.headline Sections
             v-spacer
-            v-btn(v-if="isEditMode" @click.stop="addSection" fab text small)
+            v-btn(v-if="isEditMode" @click.stop="showNewSection = true" fab text small)
               v-icon mdi-plus-circle
           v-card-text(v-if="!isEditMode")
             v-list
@@ -48,7 +52,7 @@
                 v-list-tile(:key="item.id" :disabled="item.deprecated" avatar)
                   v-list-tile-avatar.min-1.pr-2
                     v-icon(:title="sectionName(item.type)") {{ sectionIcon(item.type) }}
-                  span.text-xs-center.min-1 {{ item.header == 1 ? 'I' : 'II' }}
+                  //- span.text-xs-center.min-1 {{ item.header == 1 ? 'I' : 'II' }}
                   v-list-tile-content {{ item.name }}
                   span.ml-2.text-xs-center.min-4 {{ sectionSize(item.size) }}
           v-card-text(v-if="isEditMode")
@@ -57,9 +61,9 @@
                 v-list-tile(:key="item.id" avatar)
                   v-list-tile-avatar.min-1.pr-2
                     v-icon.handle(:title="sectionName(item.type)") {{ sectionIcon(item.type) }}
-                  v-btn.min-1.mr-2(icon @click="toggleHeader(item)" :disabled="item.deprecated")
-                    span(v-if="item.header == 1") I
-                    span(v-if="item.header == 2") II
+                  //- v-btn.min-1.mr-2(icon @click="toggleHeader(item)" :disabled="item.deprecated")
+                  //-   span(v-if="item.header == 1") I
+                  //-   span(v-if="item.header == 2") II
                   v-text-field.pa-0.mx-2(:value="item.name" @input="setSection(item, 'name', $event)" :disabled="item.deprecated" :counter="sectionCount(item.type)")
                   v-select.pa-0.max-5(:value="item.size" @input="setSection(item, 'size', $event)" :items="sectionSizes" :disabled="item.deprecated" dense)
                   v-list-tile-avatar.min-1
@@ -68,9 +72,12 @@
                     v-icon(v-if="item.deprecated" @click.stop="deprecateSectionToggle(item)") mdi-checkbox-blank-outline
                     v-icon(v-if="!item.deprecated" @click.stop="deprecateSectionToggle(item)") mdi-checkbox-marked-outline
 
+    DialogNewAttribute(v-model="showNewAttribute" @add="doAddAttribute")
+    DialogNewSection(v-model="showNewSection" @add="doAddSection")
+
     v-dialog(v-model="showAttributeOptions" v-if="currentAttribute != null", persistent, width=450)
       v-card
-        v-card-title.title {{ currentAttribute.name || attributeName(currentAttribute.type) }} Settigns
+        v-card-title.title {{ currentAttribute.name || attributeName(currentAttribute.type) }} Settings
         v-card-text.body-1(v-if="currentAttribute.type === 'options'")
           .body-1 These are the options the user can shoose from:
           v-layout(v-for="(item, index) in currentAttribute.data.items")
@@ -127,31 +134,26 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { cloneDeep, find, maxBy } from 'lodash';
+import DialogNewAttribute from '@/components/Dialogs/DialogNewAttribute.vue';
+import DialogNewSection from '@/components/Dialogs/DialogNewSection.vue';
+import attributeTypes from '@/assets/attributeTypes.json';
+import sectionTypes from '@/assets/sectionTypes.json';
+import sectionSizes from '@/assets/sectionSizes.json';
 
-@Component
+@Component({
+  components: {
+    DialogNewAttribute,
+    DialogNewSection
+  },
+})
 export default class Template extends Vue {
-  attributeTypes: Array<object> = [
-    { text: 'Date', value: 'date', icon: 'mdi-calendar' },
-    { text: 'Duration', value: 'duration', icon: 'mdi-timer-10' },
-    { text: 'Image', value: 'image', icon: 'mdi-image' },
-    { text: 'Name', value: 'name', icon: 'mdi-account-card-details' },
-    { text: 'Number', value: 'number', icon: 'mdi-numeric' },
-    { text: 'Options', value: 'options', icon: 'mdi-check-box-multiple-outline', options: true },
-    { text: 'Spacer', value: 'spacer', icon: 'mdi-minus' },
-    { text: 'Text', value: 'string', icon: 'mdi-format-text' },
-    { text: 'Armed Forces', value: 'aremedforces', icon: 'mdi-tank' }
-  ];
+  private attributeTypes = attributeTypes;
+  private sectionTypes = sectionTypes;
+  private sectionSizes = sectionSizes
 
-  sectionTypes: Array<object> = [
-    { text: 'Data Table', value: 'datatable', icon: 'mdi-table-large', options: true  },
-    { text: 'Text', value: 'text', icon: 'mdi-format-text' },
-  ];
-
-  sectionSizes: Array<object> = [
-    { text: 'Full', value: 'full' },
-    { text: 'Half', value: 'half' },
-  ];
-
+  private notFound = false;
+  private showNewAttribute = false;
+  private showNewSection = false;
   private showAttributeOptions = false;
   private currentAttribute = null;
   private showSectionOptions = false;
@@ -221,38 +223,11 @@ export default class Template extends Vue {
 
   @Watch('$route', { immediate: true, deep: true })
   private fetchTemplate() {
-    this.$store.dispatch('session/loadTemplate', this.$route.params.name);
-  }
-
-  private addAttribute() {
-    let max = {
-      id: 0
-    };
-    if (this.attributes.length) {
-      max = maxBy(this.attributes, (o) => o.id);
-    }
-
-    this.$store.commit('session/setTemplateAttribute', {
-      new: true,
-      id: max.id + 1,
-      type: 'string'
-    });
-  }
-
-  private addSection() {
-    let max = {
-      id: 0
-    };
-    if (this.sections.length) {
-      max = maxBy(this.sections, (o) => o.id);
-    }
-
-    this.$store.commit('session/setTemplateSection', {
-      new: true,
-      header: 1,
-      id: max.id + 1,
-      type: 'text',
-      size: 'full'
+    this.$store.dispatch('session/loadTemplate', this.$route.params.name).then((ok) => {
+      this.notFound = false;
+      if (!ok) {
+        this.notFound = true;
+      }
     });
   }
 
@@ -304,9 +279,45 @@ export default class Template extends Vue {
     this.$store.commit('session/setTemplateAttribute', item);
   }
 
-  deprecateSectionToggle(item) {
+  private deprecateSectionToggle(item) {
     item.deprecated = item.deprecated ? false : true;
     this.$store.commit('session/setTemplateSection', item);
+  }
+
+  private doAddAttribute(options) {
+    let max = {
+      id: 0
+    };
+    if (this.attributes.length) {
+      max = maxBy(this.attributes, (o) => o.id);
+    }
+
+    this.$store.commit('session/setTemplateAttribute', {
+      new: true,
+      id: max.id + 1,
+      type: options.type,
+      name: options.name
+    });
+
+    this.showNewAttribute = false;
+  }
+
+  private doAddSection(options) {
+    let max = {
+      id: 0
+    };
+    if (this.sections.length) {
+      max = maxBy(this.sections, (o) => o.id);
+    }
+
+    this.$store.commit('session/setTemplateSection', {
+      new: true,
+      id: max.id + 1,
+      header: options.header,
+      type: options.type,
+      size: options.size,
+      name: options.name
+    });
   }
 
   private dragReorderAttribute(data: object) {
@@ -400,55 +411,4 @@ export default class Template extends Vue {
 </script>
 
 <style lang="scss">
-// .td-icon {
-//   width: 1em;
-//   text-align: center;
-// }
-// .td-checkbox {
-//   width: 1em;
-//   .v-input {
-//     justify-content: center;
-//   }
-// }
-// .td-size {
-//   width: 5em;
-//   text-align: center;
-// }
-// .td-header {
-//   width: 3em;
-//   text-align: center;
-// }
-// .typeHeader {
-//   width: 13em;
-// }
-// table.v-table thead td:not(:nth-child(1)), table.v-table tbody td:not(:nth-child(1)), table.v-table thead th:not(:nth-child(1)), table.v-table tbody th:not(:nth-child(1)), table.v-table thead td:first-child, table.v-table tbody td:first-child, table.v-table thead th:first-child, table.v-table tbody th:first-child {
-//   padding: 0px;
-// }
-// .v-btn--small {
-//   padding: 0;
-//   margin: 0;
-//   width: 20px !important;
-//   height: 20px !important;
-// }
-// .v-input {
-//   font-size: 14px !important;
-//   input {
-//     padding: 4px 0 4px
-//   }
-//   .v-input--selection-controls__input {
-//     margin: 0px
-//   }
-// }
-// .handle {
-//   cursor: move;
-// }
-// .v-select {
-//   font-size: 14px !important;
-//   input {
-//     padding: 4px 0 4px
-//   }
-//   .v-select__selection {
-//     margin: 4px 0 4px
-//   }
-// }
 </style>

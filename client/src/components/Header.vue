@@ -21,7 +21,7 @@
             v-list-tile-avatar
               v-icon mdi-book-plus
             v-list-tile-title New Template
-          v-list-tile(disabled @click="showUploadMedia")
+          v-list-tile(@click="showUploadMedia")
             v-list-tile-avatar
               v-icon mdi-cloud-upload-outline
             v-list-tile-title Upload Media

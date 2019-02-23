@@ -1,7 +1,9 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=450)
     v-card
-      v-card-title.title Upload Media
+      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+        v-toolbar-title Upload Media
+      v-divider
       v-card-text
         v-text-field(v-model="title", label="Title")
         UploadButton(:fileChangedCallback="fileChanged")
@@ -21,9 +23,9 @@ import UploadButton from 'vuetify-upload-button';
     UploadButton,
   },
 })
-export default class UploadMedia extends Vue {
+export default class DialogUploadMedia extends Vue {
   @Prop({ default: '' })
-  public value!: string;
+  public value!: bool;
 
   private title: string = '';
   private file = null;
@@ -32,6 +34,11 @@ export default class UploadMedia extends Vue {
     'I am the owner of this image and release it under the CC',
     'I am not the owner of this image but it is covered under the CC',
   ];
+
+  // Computed Properties
+  private get themeColor() {
+    return this.$store.getters['session/themeColor'];
+  }
 
   // Methods
   private doCancel() {

@@ -19,8 +19,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import ContentText from '@/components/ContentText.vue';
-import ContentDatatable from '@/components/ContentDatatable.vue';
+import ContentText from '@/components/Content/ContentText.vue';
+import ContentDatatable from '@/components/Content/ContentDatatable.vue';
 
 @Component({
   components: {

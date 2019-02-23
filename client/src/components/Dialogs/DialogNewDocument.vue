@@ -1,7 +1,8 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=550)
     v-card
-      v-card-title.title Create New Template
+      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+        v-toolbar-title Create New Template
       v-divider
       v-card-text
         v-autocomplete(v-model="template" label="Tempalte"
@@ -23,9 +24,9 @@ import { map } from 'lodash';
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
 @Component
-export default class NewDocument extends Vue {
+export default class DialogNewDocument extends Vue {
   @Prop({ default: '' })
-  public value!: string;
+  public value!: bool;
 
   private title = '';
   private synopsis = '';
@@ -36,8 +37,8 @@ export default class NewDocument extends Vue {
   private search = null;
 
   // Computed Properties
-  private get isDocumentPage() {
-    return this.$store.state.route.name === 'document';
+  private get themeColor() {
+    return this.$store.getters['session/themeColor'];
   }
 
   @Watch('search')

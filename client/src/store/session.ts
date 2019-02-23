@@ -38,6 +38,7 @@ export const actions: ActionTree<SessionState, RootState> = {
       return context.dispatch('loadTemplate', doc.template);
     }).catch(() => {
       context.commit('setDocument', null);
+      return false;
     }).finally(() => {
       context.commit('setBusy', false);
     });
@@ -49,8 +50,10 @@ export const actions: ActionTree<SessionState, RootState> = {
 
     return context.dispatch('template/get', name, { root: true }).then((doc) => {
       context.commit('setTemplate', doc);
+      return true;
     }).catch(() => {
       context.commit('setTemplate', null);
+      return false;
     }).finally(() => {
       context.commit('setBusy', false);
     });

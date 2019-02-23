@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const config = require('./lambdaAPI/config');
 const DynamoDbLocal = require('dynamodb-local');
 const dynamoose = require('dynamoose');
+const fs = require('fs-extra');
 const express = require('express');
 const lambda = require('./lambdaAPI');
 const path = require('path');
@@ -118,11 +119,12 @@ DynamoDbLocal.launch(config.dynamoLocalPort, path.join(__dirname, 'temp'), [], f
   console.log(`DynamoDB on port ${config.dynamoLocalPort}`);
 
   return new Promise((resolve, reject) => {
+    fs.ensureDirSync(path.join(__dirname, 'temp', 's3'));
     new S3rver({
       port: config.s3Port,
       hostname: 'localhost',
       silent: false,
-      cors: '<CORSConfiguration><CORSRule><AllowedOrigin>*</AllowedOrigin><AllowedMethod>*</AllowedMethod><MaxAgeSeconds>3000</MaxAgeSeconds><AllowedHeader>*</AllowedHeader></CORSRule></CORSConfiguration>',
+      cors: '<CORSConfiguration><CORSRule><AllowedOrigin>*</AllowedOrigin><AllowedMethod>POST</AllowedMethod><MaxAgeSeconds>3000</MaxAgeSeconds><AllowedHeader>*</AllowedHeader></CORSRule></CORSConfiguration>',
       directory: path.join(__dirname, 'temp', 's3'),
       removeBucketsOnClose: true
     }).run((err, host, port) => {

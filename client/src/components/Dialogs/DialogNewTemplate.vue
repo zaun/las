@@ -1,7 +1,8 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=550)
     v-card
-      v-card-title.title Create New Template
+      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+        v-toolbar-title Create New Template
       v-divider
       v-card-text
         .body-1 Templates are used to define what information a type a document should hold.
@@ -20,12 +21,17 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
-export default class NewTemplate extends Vue {
+export default class DialogNewTemplate extends Vue {
   @Prop({ default: '' })
-  public value!: string;
+  public value!: bool;
 
   private name = '';
   private description = '';
+
+  // Computed Properties
+  private get themeColor() {
+    return this.$store.getters['session/themeColor'];
+  }
 
   // Methods
   private doCancel() {

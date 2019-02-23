@@ -59,13 +59,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import AttributeDate from '@/components/AttributeDate.vue';
-import AttributeDuration from '@/components/AttributeDuration.vue';
-import AttributeName from '@/components/AttributeName.vue';
-import AttributeOptions from '@/components/AttributeOptions.vue';
-import AttributeNumber from '@/components/AttributeNumber.vue';
-import AttributeString from '@/components/AttributeString.vue';
-import AttributeArmedForces from '@/components/AttributeArmedForces.vue';
+import AttributeDate from '@/components/Attribute/AttributeDate.vue';
+import AttributeDuration from '@/components/Attribute/AttributeDuration.vue';
+import AttributeName from '@/components/Attribute/AttributeName.vue';
+import AttributeOptions from '@/components/Attribute/AttributeOptions.vue';
+import AttributeNumber from '@/components/Attribute/AttributeNumber.vue';
+import AttributeString from '@/components/Attribute/AttributeString.vue';
+import AttributeArmedForces from '@/components/Attribute/AttributeArmedForces.vue';
 
 @Component({
   components: {

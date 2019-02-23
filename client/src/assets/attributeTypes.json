@@ -1,0 +1,48 @@
+[
+  {
+    "text": "Date",
+    "value": "date",
+    "icon": "mdi-calendar"
+  },
+  {
+    "text": "Duration",
+    "value": "duration",
+    "icon": "mdi-timer-10"
+  },
+  {
+    "text": "Image",
+    "value": "image",
+    "icon": "mdi-image"
+  },
+  {
+    "text": "Name",
+    "value": "name",
+    "icon": "mdi-account-card-details"
+  },
+  {
+    "text": "Number",
+    "value": "number",
+    "icon": "mdi-numeric"
+  },
+  {
+    "text": "Options",
+    "value": "options",
+    "icon": "mdi-check-box-multiple-outline",
+    "options": true
+  },
+  {
+    "text": "Spacer",
+    "value": "spacer",
+    "icon": "mdi-minus"
+  },
+  {
+    "text": "Text",
+    "value": "string",
+    "icon": "mdi-format-text"
+  },
+  {
+    "text": "Armed Forces",
+    "value": "aremedforces",
+    "icon": "mdi-tank"
+  }
+]

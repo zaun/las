@@ -24,7 +24,7 @@
 <script lang="ts">
 import { cloneDeep, map } from 'lodash';
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
-import Attribute from '@/components/Attribute.vue';
+import Attribute from '@/components/Attribute/Attribute.vue';
 
 @Component({
   components: {

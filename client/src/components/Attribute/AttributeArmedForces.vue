@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import AttributeOptions from '@/components/AttributeOptions.vue';
+import AttributeOptions from '@/components/Attribute/AttributeOptions.vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({

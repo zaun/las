@@ -1,0 +1,13 @@
+[
+  {
+    "text": "Data Table",
+    "value": "datatable",
+    "icon": "mdi-table-large",
+    "options": true
+  },
+  {
+    "text": "Text",
+    "value": "text",
+    "icon": "mdi-format-text"
+  }
+]
