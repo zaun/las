@@ -6,6 +6,11 @@
     "options": true
   },
   {
+    "text": "Sheet Music",
+    "value": "sheetmusic",
+    "icon": "mdi-playlist-music"
+  },
+  {
     "text": "Text",
     "value": "text",
     "icon": "mdi-format-text"

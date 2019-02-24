@@ -8,6 +8,14 @@
               :cols="data ? data.cols || [] : []"
               @input="onInput")
     
+  ContentSheetMusic(v-else-if="template === 'sheetmusic'"
+              :label="label"
+              :disabled="disabled"
+              :readonly="readonly"
+              :value="value"
+              :header="header"
+              @input="onInput")
+    
   ContentText(v-else-if="template === 'text'"
               :label="label"
               :disabled="disabled"
@@ -19,12 +27,14 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import ContentText from '@/components/Content/ContentText.vue';
 import ContentDatatable from '@/components/Content/ContentDatatable.vue';
+import ContentSheetMusic from '@/components/Content/ContentSheetMusic.vue';
+import ContentText from '@/components/Content/ContentText.vue';
 
 @Component({
   components: {
     ContentDatatable,
+    ContentSheetMusic,
     ContentText,
   },
 })
