@@ -9,6 +9,13 @@
                   :value="value"
                   @input="onInput")
 
+  AttributeCountry(v-else-if="template === 'country'"
+                  :label="label"
+                  :disabled="disabled"
+                  :readonly="readonly"
+                  :value="value"
+                  @input="onInput")
+
   AttributeDate(v-else-if="template === 'date'"
                 :label="label"
                 :disabled="disabled"
@@ -59,6 +66,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import AttributeCountry from '@/components/Attribute/AttributeCountry.vue';
 import AttributeDate from '@/components/Attribute/AttributeDate.vue';
 import AttributeDuration from '@/components/Attribute/AttributeDuration.vue';
 import AttributeName from '@/components/Attribute/AttributeName.vue';
@@ -69,13 +77,14 @@ import AttributeArmedForces from '@/components/Attribute/AttributeArmedForces.vu
 
 @Component({
   components: {
+    AttributeArmedForces,
+    AttributeCountry,
     AttributeDate,
     AttributeDuration,
     AttributeName,
     AttributeOptions,
     AttributeNumber,
-    AttributeString,
-    AttributeArmedForces
+    AttributeString
   },
 })
 export default class Attribute extends Vue {

@@ -6,7 +6,7 @@
     "options": true
   },
   {
-    "text": "Sheet Music",
+    "text": "Sheet Music with abc notation",
     "value": "sheetmusic",
     "icon": "mdi-playlist-music"
   },

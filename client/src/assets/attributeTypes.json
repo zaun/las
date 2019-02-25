@@ -44,5 +44,10 @@
     "text": "Armed Forces",
     "value": "aremedforces",
     "icon": "mdi-tank"
+  },
+  {
+    "text": "Country",
+    "value": "country",
+    "icon": "mdi-earth"
   }
 ]

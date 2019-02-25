@@ -4,7 +4,17 @@
     .value(v-html="clean(value)")
 
   .a-options(v-else-if="!readonly")
-    v-select(clearable
+    v-select(v-if="sortedItems.length < 20" clearable
+              :disabled="disabled"
+              :hide-details="disabled"
+              :label="label"
+              :value="value"
+              :items="sortedItems"
+              :multiple="multi"
+              :chips="multi"
+              @focus.native="$event.target.select()"
+              @input="onInput")
+    v-autocomplete(v-if="sortedItems.length >= 20" clearable
               :disabled="disabled"
               :hide-details="disabled"
               :label="label"
