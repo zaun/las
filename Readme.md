@@ -1,0 +1,47 @@
+
+## To Do List for MVP
+
+- [ ] (Attr) Map, supporting a single pin. or polygon
+- [ ] (Attr) Image, single and multi. Single should be full width, multi should be small, maybe 40px width.
+- [ ] (Cont) Map, supporting multiple pins, lines or polygons, geojson data
+- [ ] (Cont) Image, Single image, jumotron, or grid
+- [ ] (Cont) Image Overlay, hitbox/button at (x,y) on image to open an info callout
+- [ ] (Cont) SheetMusic, add download button to get a svg or pdf
+- [ ] (Auth) Finish forgot password
+- [ ] (Auth) Secure backend routes, only GET without authorization header
+- [ ] (Code) Fix issues with template editor (vuex store updates not updating view)
+- [ ] (Code) Support printing a document without buttons/header/footer/UI/etc.
+- [ ] (Code) Fix the upload media dialog to support drag and drop, preview and progress bar
+- [ ] (Code) Fix all TypeScript issues
+- [ ] (Code) Add unit tests for all components
+  - [ ] App.vue
+  - [ ] views/Docuemnt.vue
+  - [ ] views/Home.vue
+  - [ ] views/Search.vue
+  - [ ] views/Tempalte.vue
+  - [ ] components/ABC.vue
+  - [ ] components/Footer.vue
+  - [ ] components/Header.vue
+  - [ ] components/Mermaid.vue
+  - [ ] components/Attributes/Attribute.vue
+  - [ ] components/Attributes/AttributeArmedForces.vue
+  - [ ] components/Attributes/AttributeCountry.vue
+  - [ ] components/Attributes/AttributeDate.vue
+  - [ ] components/Attributes/AttributeDuration.vue
+  - [ ] components/Attributes/AttributeName.vue
+  - [ ] components/Attributes/AttributeNumber.vue
+  - [ ] components/Attributes/AttributeOptions.vue
+  - [ ] components/Attributes/AttributeString.vue
+  - [ ] components/Content/Content.vue
+  - [ ] components/Content/ContentDatatable.vue
+  - [ ] components/Content/ContentGraph.vue
+  - [ ] components/Content/ContentSheetMusic.vue
+  - [ ] components/Content/ContentText.vue
+  - [ ] components/Dialogs/DialogAuth.vue
+  - [ ] components/Dialogs/DialogDirty.vue
+  - [ ] components/Dialogs/DialogNewAttribute.vue
+  - [ ] components/Dialogs/DialogNewDocument.vue
+  - [ ] components/Dialogs/DialogNewSection.vue
+  - [ ] components/Dialogs/DialogNewTemplate.vue
+  - [ ] components/Dialogs/DialogSystemInfo.vue
+  - [ ] components/Dialogs/DialogUploadMedia.vue
