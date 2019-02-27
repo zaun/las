@@ -48,7 +48,8 @@ export default class ContentGraph extends Vue {
   margin-top: 6px;
   margin-bottom: 4px;
   .title {
-    border-bottom: 1px solid #bbb
+    border-bottom: 1px solid #bbb;
+    height: 30px;
   }
 }
 </style>

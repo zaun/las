@@ -65,6 +65,10 @@ export default class App extends Vue {
   }
 }
 
+.float-right {
+  float: right;
+}
+
 .min-1 {
   min-width: 1em;
 }

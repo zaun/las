@@ -49,7 +49,8 @@ export default class ContentText extends Vue {
   margin-top: 6px;
   margin-bottom: 4px;
   .title {
-    border-bottom: 1px solid #bbb
+    border-bottom: 1px solid #bbb;
+    height: 30px;
   }
   .label {
     color: rgba(0,0,0,0.54);

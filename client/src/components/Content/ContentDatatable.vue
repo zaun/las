@@ -1,8 +1,12 @@
 <template lang="pug">
   .c-datatable.avoid-break(v-if="readonly && data.length")
     .title.font-weight-bold(v-if="header == 1") {{ label }}
+      .float-right
+        v-btn(small fab text @click="exportData")
+          v-icon mdi-json
     .subheading.font-weight-bold(v-if="header == 2") {{ label }}
     v-data-table(:headers="headers" :items="data" :hide-actions="data.length < 10")
+      template(slot="footer")
       template(slot="items" slot-scope="props")
         td(v-for="col in cols")
           Attribute(:type="col.type" v-model="props.item[col.name ? col.name : col.title.toLowerCase()]" :readonly="true")
@@ -50,6 +54,22 @@ export default class ContentDatatable extends Vue {
   private newItem = {};
   private data: Array<object> = [];
 
+
+  private saveAs = function(filename: string, data: string) {
+    var blob = new Blob([data], {type: 'text/json'});
+    if(window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveBlob(blob, filename);
+    }
+    else{
+      var elem = window.document.createElement('a');
+      elem.href = window.URL.createObjectURL(blob);
+      elem.download = filename;        
+      document.body.appendChild(elem);
+      elem.click();        
+      document.body.removeChild(elem);
+    }
+  };
+
   @Watch('value')
   onChildChanged2() {
     this.updateData()
@@ -75,6 +95,10 @@ export default class ContentDatatable extends Vue {
   }
 
   // Methods
+  private exportData() {
+    this.saveAs('data.json', JSON.stringify(this.value, null,2));
+  }
+
   private onInput() {
     console.log(this.data);
     this.$emit('input', this.data);
@@ -110,7 +134,8 @@ export default class ContentDatatable extends Vue {
     white-space: nowrap;
   }
   .title {
-    border-bottom: 1px solid #bbb
+    border-bottom: 1px solid #bbb;
+    height: 30px;
   }
   .body-1 {
     text-align: justify
