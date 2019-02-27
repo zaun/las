@@ -9,6 +9,8 @@
           //- span {{ props.item[col.name ? col.name : col.title.toLowerCase()] }}
 
   .c-datatable.edit(v-else-if="!readonly")
+    .title.font-weight-bold(v-if="header == 1") {{ label }}
+    .subheading.font-weight-bold(v-if="header == 2") {{ label }}
     v-data-table(:headers="headers" :items="data" :hide-actions="data.length < 10")
       template(slot="items" slot-scope="props")
         td.px-2(v-for="col in cols")

@@ -5,10 +5,11 @@
     div.body-1(v-html="clean(value)")
 
   .c-text(v-else-if="!readonly")
+    .title.font-weight-bold(v-if="header == 1") {{ label }}
+    .subheading.font-weight-bold(v-if="header == 2") {{ label }}
     v-textarea(auto-grow
                 :disabled="disabled"
                 :hide-details="disabled"
-                :label="label"
                 :value="value"
                 @input="onInput")
 </template>

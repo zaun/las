@@ -122,7 +122,7 @@ export const actions: ActionTree<SessionState, RootState> = {
 
   search(context, term) {
     context.commit('setBusy', true);
-    context.commit('setResults', null);
+    context.commit('setResults', { d: [], t: []});
 
     return context.dispatch('document/search', term, { root: true }).then((data) => {
       context.commit('setResults', data);

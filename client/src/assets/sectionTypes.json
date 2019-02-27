@@ -6,6 +6,11 @@
     "options": true
   },
   {
+    "text": "Graphs with mermaid notation",
+    "value": "graph",
+    "icon": "mdi-sitemap"
+  },
+  {
     "text": "Sheet Music with abc notation",
     "value": "sheetmusic",
     "icon": "mdi-playlist-music"

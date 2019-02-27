@@ -2,7 +2,7 @@
   .c-sheetmusic.avoid-break(v-if="readonly && value")
     .title.font-weight-bold(v-if="header == 1") {{ label }}
     .subheading.font-weight-bold(v-if="header == 2") {{ label }}
-    ABC(:value="value")
+    Mermaid(:value="value")
 
   .c-sheetmusic(v-else-if="!readonly")
     .title.font-weight-bold(v-if="header == 1") {{ label }}
@@ -16,14 +16,14 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
-import ABC from '@/components/ABC.vue';
+import Mermaid from '@/components/Mermaid.vue';
 
 @Component({
   components: {
-    ABC,
+    Mermaid,
   },
 })
-export default class ContentText extends Vue {
+export default class ContentGraph extends Vue {
   @Prop({ default: '' })
   public label!: string;
   @Prop({ default: false })
@@ -34,7 +34,7 @@ export default class ContentText extends Vue {
   public disabled!: boolean;
   @Prop()
   public value!: string;
-  
+
   // Methods
   private onInput(newValue: string) {
     this.$emit('input', newValue);
