@@ -9,6 +9,9 @@
 - [ ] (Cont) SheetMusic, add download button to get a svg or pdf
 - [ ] (Auth) Finish forgot password
 - [ ] (Auth) Secure backend routes, only GET without authorization header
+- [ ] (Code) Add an audit log for document creating and editing
+- [ ] (Code) Create and hookup document history view
+- [ ] (Code) Add a v-alert or v-banner when saving or loading data fails
 - [ ] (Code) Fix issues with template editor (vuex store updates not updating view)
 - [ ] (Code) Support printing a document without buttons/header/footer/UI/etc.
 - [ ] (Code) Fix the upload media dialog to support drag and drop, preview and progress bar
