@@ -1,12 +1,12 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=450)
     v-card
-      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+      v-toolbar(dense card text :color="themeColor + ' accent-2'")
         v-toolbar-title Upload Media
       v-divider
       v-card-text
         v-text-field(v-model="title", label="Title")
-        UploadButton(:fileChangedCallback="fileChanged")
+        UploadButton(:fileChangedCallback="onFileChanged")
       v-divider
       v-card-actions
         v-spacer
@@ -25,49 +25,54 @@ import UploadButton from 'vuetify-upload-button';
 })
 export default class DialogUploadMedia extends Vue {
   @Prop({ default: '' })
-  public value!: bool;
+  public value!: boolean;
 
   private title: string = '';
-  private file = null;
-  private selected = '';
-  private options = [
+  private file: File | null = null;
+  private selected: string = '';
+  private options: string[] = [
     'I am the owner of this image and release it under the CC',
     'I am not the owner of this image but it is covered under the CC',
   ];
 
   // Computed Properties
-  private get themeColor() {
+  private get themeColor(): string {
     return this.$store.getters['session/themeColor'];
   }
 
   // Methods
-  private doCancel() {
+  private doCancel(): void {
     this.$emit('input', false);
   }
 
-  private doUpload() {
-    this.$store.dispatch('media/getUrl', {
-      title: this.title,
-      mimeType: this.file.type
-    }).then((secureUrl) => {
+  private async doUpload(): Promise<void> {
+    if (!this.file) {
+      return;
+    }
+
+    try {
+      const secureUrl: string = await this.$store.dispatch('media/getUrl', {
+        title: this.title,
+        mimeType: this.file.type,
+      });
+
       const form = new FormData();
       form.append(this.file.name, this.file);
-      return this.$store.dispatch('media/post', {
+
+      await this.$store.dispatch('media/post', {
         url: secureUrl,
-        content: form
+        content: form,
       });
-    }).then(() => {
-      this.$emit('input', false);
-    }).catch((err) => {
-      console.log(err);
-      this.$emit('input', false);
-    });
+    } catch (_) {
+    }
+
+    this.$emit('input', false);
   }
 
-  fileChanged(file) {
+  private onFileChanged(file: File): void {
     this.file = file;
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

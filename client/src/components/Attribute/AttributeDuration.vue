@@ -130,7 +130,7 @@ export default class AttributeString extends Vue {
 
   // Methods
   private onInput(prop: string, newValue: string) {
-    let ret: DataValue = {
+    const ret: DataValue = {
       y: this.value.y,
       d: this.value.d,
       h: this.value.h,
@@ -142,7 +142,7 @@ export default class AttributeString extends Vue {
 
     this.$emit('input', ret);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

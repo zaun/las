@@ -83,7 +83,7 @@ export default class AttributeName extends Vue {
   }})
   public value!: DataValue;
 
-  private suffixItems: Array<string> = [
+  private suffixItems: string[] = [
     'Jr.',
     'Sr.',
     'II',

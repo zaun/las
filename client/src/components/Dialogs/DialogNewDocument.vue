@@ -1,7 +1,7 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=550)
     v-card
-      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+      v-toolbar(dense card text :color="themeColor + ' accent-2'")
         v-toolbar-title Create New Template
       v-divider
       v-card-text
@@ -22,19 +22,20 @@
 <script lang="ts">
 import { map } from 'lodash';
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+import { ListData, TemplateData } from '@/types/data';
 
 @Component
 export default class DialogNewDocument extends Vue {
   @Prop({ default: '' })
-  public value!: bool;
+  public value!: boolean;
 
-  private title = '';
-  private synopsis = '';
-  private template = '';
+  private title: string = '';
+  private synopsis: string = '';
+  private template: string = '';
 
-  private loading = false;
-  private templates = [];
-  private search = null;
+  private loading: boolean = false;
+  private templates: ListData[] = [];
+  private search: string = '';
 
   // Computed Properties
   private get themeColor() {
@@ -42,51 +43,53 @@ export default class DialogNewDocument extends Vue {
   }
 
   @Watch('search')
-  private watchSearch(val) {
-    val && val !== this.select && this.querySelections(val)
+  private watchSearch(a: string, b: string): void {
+    if (a != b) {
+      this.querySelections(a);
+    }
   }
 
   // Methods
-  private doCancel() {
+  private doCancel(): void {
     this.$emit('input', false);
   }
-  
-  private doCreate() {
-    console.log(this.template);
+
+  private async doCreate(): Promise<void> {
     if (!this.template || !this.title || !this.synopsis)  {
       return;
     }
 
-    this.$store.dispatch('session/newDocument', {
-      title: this.title,
-      template: this.template,
-      synopsis: this.synopsis
-    }).then((doc) => {
-      console.log(doc);
-      this.$emit('input', false);
-      this.$router.push({ name: 'document', params: { title: doc.title }});
-      this.template = '';
-      this.title = '';
-      this.synopsis = '';
-    }).catch(() => {
-    });
+    try {
+      const document = await this.$store.dispatch('session/newDocument', {
+        title: this.title,
+        template: this.template,
+        synopsis: this.synopsis,
+      });
+      this.$router.push({ name: 'document', params: { title: document.title }});
+    } catch (_) {
+    }
+
+    this.$emit('input', false);
+    this.template = '';
+    this.title = '';
+    this.synopsis = '';
   }
 
-  private querySelections(val) {
+  private querySelections(val: String): void {
     this.loading = true;
-    this.$store.dispatch('template/list', val).then((data) => {
-      this.templates = map(data, (i) => {
+    this.$store.dispatch('template/list', val).then((data: TemplateData[]) => {
+      this.templates = map(data, (i: TemplateData) => {
         return {
           text: i.name,
-          value: i.$href.split('/').pop()
+          value: i.$href.split('/').pop(),
         };
-      });
+      }) as ListData[];
       this.loading = false;
     }).catch(() => {
       this.loading = false;
-    })
+    });
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=450)
     v-card
-      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+      v-toolbar(dense card text :color="themeColor + ' accent-2'")
         v-toolbar-title Library Access System Information
       v-divider
       v-card-text.body-1
@@ -20,20 +20,26 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+interface Library {
+  logo?: string;
+  name: string;
+  version: string;
+}
+
 @Component
 export default class DialogSystemInfo extends Vue {
   @Prop({ default: '' })
   public value!: boolean;
 
-  private libraries = [];
+  private libraries: Library[] = [];
 
   // Computed Properties
-  private get themeColor() {
+  private get themeColor(): string {
     return this.$store.getters['session/themeColor'];
   }
 
   // Methods
-  private doClose() {
+  private doClose(): void {
     this.$emit('input', false);
   }
 
@@ -42,50 +48,50 @@ export default class DialogSystemInfo extends Vue {
 
     this.libraries.push({
       logo: require('../../assets/logos/vue.png'),
-      name: 'Vue.JS', 
-      version: deps.vue
+      name: 'Vue.JS',
+      version: deps.vue,
     });
     this.libraries.push({
       logo: require('../../assets/logos/vuetify.svg'),
       name: 'Vuetify',
-      version: deps.vuetify
+      version: deps.vuetify,
     });
     this.libraries.push({
       logo: require('../../assets/logos/momentjs.svg'),
       name: 'Moment',
-      version: deps.moment
+      version: deps.moment,
     });
     this.libraries.push({
       name: 'Mermaid',
-      version: deps.mermaid
+      version: deps.mermaid,
     });
     this.libraries.push({
       name: 'ABC.js',
-      version: deps.abcjs
+      version: deps.abcjs,
     });
     this.libraries.push({
       logo: require('../../assets/logos/lodash.svg'),
       name: 'Lodash',
-      version: deps.lodash
+      version: deps.lodash,
     });
     this.libraries.push({
       name: 'axios',
-      version: deps.axios
+      version: deps.axios,
     });
     this.libraries.push({
       logo: require('../../assets/logos/vue.png'),
       name: 'Vuex',
-      version: deps.vuex
+      version: deps.vuex,
     });
     this.libraries.push({
       logo: require('../../assets/logos/vue.png'),
       name: 'vue-router',
-      version: deps['vue-router']
+      version: deps['vue-router'],
     });
 
     this.libraries.sort((a: any, b: any) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

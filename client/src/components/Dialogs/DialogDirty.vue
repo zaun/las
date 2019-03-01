@@ -1,7 +1,7 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=450)
     v-card
-      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+      v-toolbar(dense card text :color="themeColor + ' accent-2'")
         v-toolbar-title {{ title }}
       v-divider
       v-card-text.body-1 There are unsaved changes. Closing the document without saving
@@ -19,7 +19,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class DialogDirty extends Vue {
   @Prop({ default: '' })
-  public value!: bool;
+  public value!: boolean;
 
   // Computed Properties
   private get themeColor() {
@@ -46,13 +46,13 @@ export default class DialogDirty extends Vue {
   private doNo() {
     this.$emit('input', false);
   }
-  
+
   private doYes() {
     this.$store.dispatch('session/cancelEdit').then(() => {
       this.$emit('input', false);
     });
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

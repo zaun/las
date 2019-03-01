@@ -125,7 +125,7 @@ export default class DialogAuth extends Vue {
     ],
     confirmPassword: [
       (v: string) => !!v || 'Confirm password to continue',
-      (v: string) => (v === this.$refs.regPassword.value) || 'Passwords must match to continue.',
+      (v: string) => (v === (this.$refs.regPassword as HTMLInputElement).value) || 'Passwords must match to continue.',
     ],
     birthdateRules: [
       (v: string) => !!v || 'A birth date is required to continue.',
@@ -182,13 +182,13 @@ export default class DialogAuth extends Vue {
     this.showConfirmError = false;
     this.showRegisterError = false;
     if (this.$refs.signInForm) {
-      this.$refs.signInForm.reset();
+      (this.$refs.signInForm as HTMLFormElement).reset();
     }
     if (this.$refs.registerForm) {
-      this.$refs.registerForm.reset();
+      (this.$refs.signInForm as HTMLFormElement).reset();
     }
     if (this.$refs.confirmForm) {
-      this.$refs.confirmForm.reset();
+      (this.$refs.signInForm as HTMLFormElement).reset();
     }
   }
 
@@ -212,7 +212,7 @@ export default class DialogAuth extends Vue {
       attributes: {
         email: this.regEmail,
       },
-    }).then((user) => {
+    }).then(() => {
       this.networkBusy = false;
       this.confirmEmail = this.regEmail;
       this.mode = DialogMode.CONFIRM;
@@ -233,7 +233,7 @@ export default class DialogAuth extends Vue {
     this.$store.dispatch('cognito/signInUser', {
       username: this.signInEmail,
       password: this.signInPassword,
-    }).then((data) => {
+    }).then(() => {
       this.networkBusy = false;
       this.closeDialog();
     }).catch((err) => {
@@ -254,7 +254,7 @@ export default class DialogAuth extends Vue {
     this.$store.dispatch('cognito/confirmUser', {
       username: this.confirmEmail,
       code: this.confirmCode,
-    }).then((data) => {
+    }).then(() => {
       this.networkBusy = false;
       if (this.$store.getters['cognito/isLoggedIn']) {
         this.closeDialog();

@@ -7,6 +7,7 @@
     .subheading.font-weight-bold(v-if="header == 2") {{ label }}
     v-data-table(:headers="headers" :items="data" :hide-actions="data.length < 10")
       template(slot="footer")
+        td(v-for="col in cols")
       template(slot="items" slot-scope="props")
         td(v-for="col in cols")
           Attribute(:type="col.type" v-model="props.item[col.name ? col.name : col.title.toLowerCase()]" :readonly="true")
@@ -23,7 +24,7 @@
         td.px-2(v-for="col in cols")
           Attribute(:type="col.type" :label="col.title" v-model="newItem[col.name ? col.name : col.title.toLowerCase()]" :readonly="false")
         td.px-2.col-actions
-          v-btn(small flat fab @click="addRow")
+          v-btn(small text fab @click="addRow")
             v-icon mdi-plus-circle-outline
 </template>
 
@@ -35,9 +36,28 @@ import Attribute from '@/components/Attribute/Attribute.vue';
 @Component({
   components: {
     Attribute,
-  }
+  },
 })
 export default class ContentDatatable extends Vue {
+
+  // Computed Properties
+  private get headers() {
+    const headers =  map(this.cols, (i) => {
+      return {
+        text: i.title,
+        value: i.name ? i.name : i.title.toLowerCase(),
+        class: `col-${i.type.toLowerCase()}`,
+      };
+    });
+    if (!this.readonly) {
+      headers.push({
+        text: '',
+        value: '',
+        class: 'col-actions',
+      });
+    }
+    return headers;
+  }
   @Prop({ default: '' })
   public label!: string;
   @Prop({ default: false })
@@ -47,56 +67,36 @@ export default class ContentDatatable extends Vue {
   @Prop({ default: false })
   public disabled!: boolean;
   @Prop({ default: () => [] })
-  public cols!: Array<object>;
+  public cols!: object[];
   @Prop({ default: () => [] })
-  public value!: Array<object>;
+  public value!: object[];
 
   private newItem = {};
-  private data: Array<object> = [];
+  private data: object[] = [];
+
+  @Watch('value')
+  public onChildChanged2() {
+    this.updateData();
+  }
 
 
   private saveAs = function(filename: string, data: string) {
-    var blob = new Blob([data], {type: 'text/json'});
-    if(window.navigator.msSaveOrOpenBlob) {
+    const blob = new Blob([data], {type: 'text/json'});
+    if (window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveBlob(blob, filename);
-    }
-    else{
-      var elem = window.document.createElement('a');
+    } else {
+      const elem = window.document.createElement('a');
       elem.href = window.URL.createObjectURL(blob);
-      elem.download = filename;        
+      elem.download = filename;
       document.body.appendChild(elem);
-      elem.click();        
+      elem.click();
       document.body.removeChild(elem);
     }
   };
 
-  @Watch('value')
-  onChildChanged2() {
-    this.updateData()
-  }
-  
-  // Computed Properties
-  private get headers() {
-    const headers =  map(this.cols, (i) => {
-      return {
-        text: i.title,
-        value: i.name ? i.name : i.title.toLowerCase(),
-        class: `col-${i.type.toLowerCase()}`
-      }
-    });
-    if(!this.readonly) {
-      headers.push({
-        text: '',
-        value: '',
-        class: 'col-actions'
-      });
-    }
-    return headers;
-  }
-
   // Methods
   private exportData() {
-    this.saveAs('data.json', JSON.stringify(this.value, null,2));
+    this.saveAs('data.json', JSON.stringify(this.value, null, 2));
   }
 
   private onInput() {
@@ -118,7 +118,7 @@ export default class ContentDatatable extends Vue {
   private created() {
     this.updateData();
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

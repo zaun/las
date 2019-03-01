@@ -265,7 +265,7 @@ export const mutations: MutationTree<SessionState> = {
     const newArray = s.template.sections.slice();
     newArray.splice((newIndex < 0 ? newArray.length + newIndex : newIndex), 0, newArray.splice(oldIndex, 1)[0]);
     Vue.set(s.template, 'sections', newArray);
-  }
+  },
 };
 
 export const getters: GetterTree<SessionState, RootState> = {

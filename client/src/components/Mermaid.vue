@@ -10,7 +10,7 @@ import mermaid from 'mermaid';
 export default class Mermaid extends Vue {
   @Prop()
   public value!: string;
-  
+
   @Watch('value', { immediate: false })
   private onValueUpdate(n, o) {
     if (n !== o) {
@@ -29,7 +29,7 @@ export default class Mermaid extends Vue {
       this.$refs.graph.innerHTML = svgCode;
     });
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

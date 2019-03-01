@@ -1,7 +1,7 @@
 <template lang="pug">
   v-dialog(v-model="value", persistent, width=550)
     v-card
-      v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+      v-toolbar(dense card text :color="themeColor + ' accent-2'")
         v-toolbar-title Create New Template
       v-divider
       v-card-text
@@ -23,37 +23,38 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class DialogNewTemplate extends Vue {
   @Prop({ default: '' })
-  public value!: bool;
+  public value!: boolean;
 
-  private name = '';
-  private description = '';
+  private name: string = '';
+  private description: string = '';
 
   // Computed Properties
-  private get themeColor() {
+  private get themeColor(): string {
     return this.$store.getters['session/themeColor'];
   }
 
   // Methods
-  private doCancel() {
+  private doCancel(): void {
     this.$emit('input', false);
   }
-  
-  private doCreate() {
+
+  private async doCreate(): Promise<void> {
     if (!this.name || !this.description)  {
       return;
     }
 
-    this.$store.dispatch('session/newTemplate', {
-      name: this.name,
-      description: this.description
-    }).then((template) => {
-      this.$router.push({ name: 'template', params: { name: template['$href'].split('/').pop() }});
-      this.$emit('input', false);
-    }).catch(() => {
-      this.$emit('input', false);
-    });
+    try {
+      const template = await this.$store.dispatch('session/newTemplate', {
+        name: this.name,
+        description: this.description,
+      });
+      this.$router.push({ name: 'template', params: { name: template.$href.split('/').pop() }});
+    } catch (_) {
+    }
+
+    this.$emit('input', false);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

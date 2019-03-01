@@ -39,7 +39,7 @@ export default class AttributeOptions extends Vue {
   @Prop({ default: false })
   public disabled!: boolean;
   @Prop({ default: [] })
-  public items!: Array<string>;
+  public items!: string[];
   @Prop({ default: false })
   public multi!: boolean;
   @Prop({ default: '' })
@@ -49,7 +49,7 @@ export default class AttributeOptions extends Vue {
   private clean(value: string) {
     if (isArray(this.value)) {
       return reduce(this.value, (result, item) => {
-        return result += item + '<br />'
+        return result += item + '<br />';
       }, '');
     } else {
       return this.value;
@@ -65,7 +65,7 @@ export default class AttributeOptions extends Vue {
   private onInput(newValue: string) {
     this.$emit('input', newValue);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -48,7 +48,7 @@
                   :label="label"
                   :disabled="disabled"
                   :readonly="readonly"
-                  :items="data ? data.items || [] : []"
+                  :items="data ? data.options || [] : []"
                   :multi="data ? data.multi : false"
                   :value="value"
                   @input="onInput")
@@ -84,7 +84,7 @@ import AttributeArmedForces from '@/components/Attribute/AttributeArmedForces.vu
     AttributeName,
     AttributeOptions,
     AttributeNumber,
-    AttributeString
+    AttributeString,
   },
 })
 export default class Attribute extends Vue {

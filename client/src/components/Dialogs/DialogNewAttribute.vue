@@ -2,7 +2,7 @@
   v-dialog(v-model="value", persistent, width=450)
     v-form(ref="form")
       v-card
-        v-toolbar(dense card flat :color="themeColor + ' accent-2'")
+        v-toolbar(dense card text :color="themeColor + ' accent-2'")
           v-toolbar-title Add New Attribute
         v-divider
         v-card-text.body-1
@@ -18,31 +18,31 @@
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import attributeTypes from '@/assets/attributeTypes.json';
+import { AttributeTypeData } from '@/types/data';
 
 @Component
 export default class DialogNewAttribute extends Vue {
   @Prop({ default: '' })
-  public value!: bool;
+  public value!: boolean;
 
-  private items = attributeTypes;
-
-  private type = 'string';
-  private name = '';
+  private items: AttributeTypeData[] = attributeTypes;
+  private type: string = 'string';
+  private name: string = '';
 
   @Watch('value')
-  private watchValue(val) {
+  private watchValue(): void {
     this.type = 'string';
     this.name = '';
-    this.$refs.form.resetValidation();
+    (this.$refs.form as HTMLFormElement).resetValidation();
   }
 
   // Computed Properties
-  private get themeColor() {
+  private get themeColor(): string {
     return this.$store.getters['session/themeColor'];
   }
 
   // Methods
-  private getCount(type: string) {
+  private getCount(type: string): number | null {
     if (type === 'spacer') {
       return null;
     }
@@ -55,28 +55,28 @@ export default class DialogNewAttribute extends Vue {
     }
 
     const rules = [
-      v => !!v || 'Name is required'
+      (v: string) => !!v || 'Name is required',
     ];
 
-    const count = this.getCount(type);
-    if (count) {
-      rules.push(v => (v && v.length <= count) || `Name must be less than ${count} characters`);
+    const count: number | null = this.getCount(type);
+    if (count != null) {
+      rules.push((v: string) => (v && v.length <= count) || `Name must be less than ${count} characters`);
     }
-    return rules
+    return rules;
   }
 
-  private onTypeChange() {
+  private onTypeChange(): void {
     if (this.type === 'spacer') {
       this.name = '';
     }
   }
 
-  private doCancel() {
+  private doCancel(): void {
     this.$emit('input', false);
   }
-  
-  private doAdd() {
-    if (this.$refs.form.validate()) {
+
+  private doAdd(): void {
+    if ((this.$refs.form as HTMLFormElement).validate()) {
       this.$emit('add', {
         type: this.type,
         name: this.name,
@@ -84,7 +84,7 @@ export default class DialogNewAttribute extends Vue {
       this.$emit('input', false);
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

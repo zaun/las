@@ -10,7 +10,7 @@ import abcjs from 'abcjs';
 export default class Mermaid extends Vue {
   @Prop()
   public value!: string;
-  
+
   @Watch('value', { immediate: false })
   private onValueUpdate(n, o) {
     if (n !== o) {
@@ -24,7 +24,7 @@ export default class Mermaid extends Vue {
     }
     abcjs.renderAbc(this.$refs.music, this.value, {});
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

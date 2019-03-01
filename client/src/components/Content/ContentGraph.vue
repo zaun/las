@@ -39,7 +39,7 @@ export default class ContentGraph extends Vue {
   private onInput(newValue: string) {
     this.$emit('input', newValue);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -43,14 +43,14 @@ export default class AttributeArmedForces extends Vue {
     'U.S. Navy Reserve',
     'U.S. Air National Guard',
     'U.S. Air Force Reserve',
-    'U.S. Coast Guard Reserve'
-  ]
+    'U.S. Coast Guard Reserve',
+  ];
 
   // Methods
   private onInput(newValue: string) {
     this.$emit('input', newValue);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -34,7 +34,7 @@ export default class AttributeDate extends Vue {
   private date: string | null = null;
 
   // Computed Properties
-  private get formattedDate () {
+  private get formattedDate() {
     if (this.value) {
       return moment(this.value, 'YYYY-MM-DD').format('MMMM Do YYYY');
     }
@@ -46,7 +46,7 @@ export default class AttributeDate extends Vue {
     console.log(newValue);
     this.$emit('input', newValue);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

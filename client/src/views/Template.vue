@@ -74,128 +74,80 @@
 
     DialogNewAttribute(v-model="showNewAttribute" @add="doAddAttribute")
     DialogNewSection(v-model="showNewSection" @add="doAddSection")
+    DailogAttributeOptions(v-model="showAttributeOptions" :item="currentAttribute" @change="closeAttributeOptions")
+    DailogSectionOptions(v-model="showSectionOptions" :item="currentSection" @change="closeSectionOptions")
 
-    v-dialog(v-model="showAttributeOptions" v-if="currentAttribute != null", persistent, width=450)
-      v-card
-        v-card-title.title {{ currentAttribute.name || attributeName(currentAttribute.type) }} Settings
-        v-card-text.body-1(v-if="currentAttribute.type === 'options'")
-          .body-1 These are the options the user can shoose from:
-          v-layout(v-for="(item, index) in currentAttribute.data.items")
-            v-flex(xs10)
-              v-text-field(:value="item" disabled)
-            v-flex.text-xs-center(xs2)
-              v-btn(fab small @click="currentAttribute.data.items.splice(index, 1)")
-                v-icon mdi-delete
-          v-layout
-            v-flex(xs10)
-              v-text-field(v-model="temp.input")
-            v-flex.text-xs-center(xs2)
-              v-btn(fab small @click="currentAttribute.data.items.push(temp.input); temp.input = ''")
-                v-icon mdi-plus
-          v-layout
-            v-flex(xs11)
-              v-checkbox(:input-value="currentAttribute.data.multi" @click.stop="currentAttribute.data.multi = !currentAttribute.data.multi" label="Can select multiple items" hide-details)
-        v-divider
-        v-card-actions
-          v-spacer
-          v-btn(@click="closeAttributeOptions") Close
-
-    v-dialog(v-model="showSectionOptions" v-if="currentSection != null", persistent, width=450)
-      v-card
-        v-card-title.title {{ currentSection.name || sectionName(currentSection.type) }} Settigns
-        v-card-text.body-1(v-if="currentSection.type === 'datatable'")
-          .body-1 These are the data columns:
-          v-layout(v-for="(item, index) in currentSection.data.cols")
-            v-flex(xs4)
-              v-text-field(:value="item.title")
-            v-flex.pl-2(xs3)
-              v-text-field(:value="item.name" disabled)
-            v-flex.pl-2(xs3)
-              v-text-field(:value="item.type" disabled)
-            v-flex.text-xs-center(xs2)
-              v-btn(fab small @click="currentSection.data.cols.splice(index, 1)")
-                v-icon mdi-delete
-          v-layout
-            v-flex(xs4)
-              v-text-field(v-model="temp.title" label="Title")
-            v-flex.pl-2(xs3)
-              v-text-field(v-model="temp.name" label="Data Name")
-            v-flex.pl-2(xs3)
-              v-select(v-model="temp.type" :items="['String', 'Number', 'Date']" label="Type")
-            v-flex.text-xs-center(xs2)
-              v-btn(fab small @click="currentSection.data.cols.push({ title: temp.title, name: temp.name, type: temp.type }); temp.title = ''; temp.type = ''; temp.name = ''")
-                v-icon mdi-plus
-        v-divider
-        v-card-actions
-          v-spacer
-          v-btn(@click="closeSectionOptions") Close
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { cloneDeep, find, maxBy } from 'lodash';
+import DailogAttributeOptions from '@/components/Dialogs/DailogAttributeOptions.vue';
 import DialogNewAttribute from '@/components/Dialogs/DialogNewAttribute.vue';
 import DialogNewSection from '@/components/Dialogs/DialogNewSection.vue';
+import DailogSectionOptions from '@/components/Dialogs/DailogSectionOptions.vue';
 import attributeTypes from '@/assets/attributeTypes.json';
 import sectionTypes from '@/assets/sectionTypes.json';
 import sectionSizes from '@/assets/sectionSizes.json';
+import { AttributeTypeData, ListData, SectionTypeData, TemplateAttributeData, TemplateSectionData } from '@/types/data';
 
 @Component({
   components: {
+    DailogAttributeOptions,
     DialogNewAttribute,
-    DialogNewSection
+    DialogNewSection,
+    DailogSectionOptions,
   },
 })
 export default class Template extends Vue {
-  private attributeTypes = attributeTypes;
-  private sectionTypes = sectionTypes;
-  private sectionSizes = sectionSizes
+  attributeTypes: Array<AttributeTypeData> = attributeTypes;
+  sectionTypes: Array<SectionTypeData> = sectionTypes;
+  sectionSizes: Array<ListData> = sectionSizes;
 
-  private notFound = false;
-  private showNewAttribute = false;
-  private showNewSection = false;
-  private showAttributeOptions = false;
-  private currentAttribute = null;
-  private showSectionOptions = false;
-  private currentSection = null;
-  private temp = {};
+  notFound = false;
+  showNewAttribute = false;
+  showNewSection = false;
+  showAttributeOptions = false;
+  currentAttribute: TemplateAttributeData | null = null;
+  showSectionOptions = false;
+  currentSection: TemplateSectionData | null = null;
 
   // Computed Properties
-  private get themeColor() {
+  get themeColor() {
     return this.$store.getters['session/themeColor'];
   }
 
-  private get attributes() {
+  get attributes() {
     return this.template.attributes;
   }
 
-  private get attributeHeaders () {
+  get attributeHeaders() {
     if (this.isEditMode) {
       return [
         { text: '', value: 'reorder', align: 'center', sortable: false },
         { text: 'Title', value: 'title', align: 'left', sortable: false },
         { text: 'Type', value: 'type', align: 'left', sortable: false },
         { text: '', value: 'options', align: 'center', sortable: false },
-        { text: 'Active', value: 'delete', align: 'center', sortable: false }
+        { text: 'Active', value: 'delete', align: 'center', sortable: false },
       ];
     }
 
     return [
       { text: 'Title', value: 'title', align: 'left', sortable: false },
       { text: 'Type', value: 'type', align: 'left', sortable: false },
-      { text: 'Active', value: 'delete', align: 'center', sortable: false }
+      { text: 'Active', value: 'delete', align: 'center', sortable: false },
     ];
   }
 
-  private get isEditMode() {
+  get isEditMode() {
     return this.$store.getters['session/isEditMode'];
   }
 
-  private get sections() {
-    return this.template.sections
-  }  
+  get sections() {
+    return this.template.sections;
+  }
 
-  private get sectionHeaders () {
+  get sectionHeaders() {
     if (this.isEditMode) {
       return [
         { text: '', value: 'reorder', align: 'center', sortable: false },
@@ -204,7 +156,7 @@ export default class Template extends Vue {
         { text: 'Type', value: 'type', align: 'left', sortable: false },
         { text: 'Size', value: 'size', align: 'left', sortable: false },
         { text: '', value: 'options', align: 'center', sortable: false },
-        { text: 'Active', value: 'delete', align: 'center', sortable: false }
+        { text: 'Active', value: 'delete', align: 'center', sortable: false },
       ];
     }
 
@@ -213,16 +165,16 @@ export default class Template extends Vue {
       { text: 'Title', value: 'title', align: 'left', sortable: false },
       { text: 'Type', value: 'type', align: 'left', sortable: false },
       { text: 'Size', value: 'size', align: 'left', sortable: false },
-      { text: 'Active', value: 'delete', align: 'center', sortable: false }
+      { text: 'Active', value: 'delete', align: 'center', sortable: false },
     ];
   }
 
-  private get template() {
+  get template() {
     return this.$store.state.session.template;
   }
 
   @Watch('$route', { immediate: true, deep: true })
-  private fetchTemplate() {
+  fetchTemplate() {
     this.$store.dispatch('session/loadTemplate', this.$route.params.name).then((ok) => {
       this.notFound = false;
       if (!ok) {
@@ -231,14 +183,14 @@ export default class Template extends Vue {
     });
   }
 
-  private attributeCount(type: string) {
+  attributeCount(type: string) {
     if (type === 'spacer') {
       return null;
     }
     return 25;
   }
 
-  private attributeName(type: string) {
+  attributeName(type: string) {
     const attr = find(this.attributeTypes, { value: type });
     if (attr) {
       return attr.text;
@@ -246,7 +198,7 @@ export default class Template extends Vue {
     return type;
   }
 
-  private attributeIcon(type: string) {
+  attributeIcon(type: string) {
     const attr = find(this.attributeTypes, { value: type });
     if (attr) {
       return attr.icon;
@@ -254,7 +206,7 @@ export default class Template extends Vue {
     return type;
   }
 
-  private attributeHasOptions(type: string) {
+  attributeHasOptions(type: string) {
     const attr = find(this.attributeTypes, { value: type });
     if (attr) {
       return attr.options || false;
@@ -262,77 +214,71 @@ export default class Template extends Vue {
     return type;
   }
 
-  private closeAttributeOptions() {
+  closeAttributeOptions() {
     this.$store.commit('session/setTemplateAttribute', this.currentAttribute);
     this.currentAttribute = null;
-    this.showAttributeOptions = false;
   }
 
-  private closeSectionOptions() {
+  closeSectionOptions() {
     this.$store.commit('session/setTemplateSection', this.currentSection);
     this.currentSection = null;
-    this.showSectionOptions = false;
   }
 
-  private deprecateAttributeToggle(item) {
+  deprecateAttributeToggle(item: AttributeTypeData) {
     item.deprecated = item.deprecated ? false : true;
     this.$store.commit('session/setTemplateAttribute', item);
   }
 
-  private deprecateSectionToggle(item) {
+  deprecateSectionToggle(item: SectionTypeData) {
     item.deprecated = item.deprecated ? false : true;
     this.$store.commit('session/setTemplateSection', item);
   }
 
-  private doAddAttribute(options) {
-    let max = {
-      id: 0
-    };
+  doAddAttribute(options: TemplateAttributeData) {
+    let max: number = 0;
     if (this.attributes.length) {
-      max = maxBy(this.attributes, (o) => o.id);
+      max = (<TemplateAttributeData>maxBy(this.attributes, (o) => o.id)).id;
     }
 
     this.$store.commit('session/setTemplateAttribute', {
       new: true,
-      id: max.id + 1,
+      id: max + 1,
       type: options.type,
-      name: options.name
+      name: options.name,
     });
 
     this.showNewAttribute = false;
   }
 
-  private doAddSection(options) {
-    let max = {
-      id: 0
-    };
+  doAddSection(options: TemplateSectionData) {
+    let max: number = 0;
     if (this.sections.length) {
-      max = maxBy(this.sections, (o) => o.id);
+      max = (<TemplateSectionData>maxBy(this.sections, (o) => o.id)).id;
     }
 
     this.$store.commit('session/setTemplateSection', {
       new: true,
-      id: max.id + 1,
+      id: max + 1,
       header: options.header,
       type: options.type,
       size: options.size,
-      name: options.name
+      name: options.name,
     });
   }
 
-  private dragReorderAttribute(data: object) {
-    this.$store.commit('session/moveTemplateAttribute', data)
+  dragReorderAttribute(data: object) {
+    this.$store.commit('session/moveTemplateAttribute', data);
   }
 
-  private dragReorderSection(data: object) {
-    this.$store.commit('session/moveTemplateSection', data)
+  dragReorderSection(data: object) {
+    this.$store.commit('session/moveTemplateSection', data);
   }
 
-  private sectionCount(type: string) {
+  sectionCount(type: string) {
     return 35;
   }
 
-  private sectionHasOptions(type: string) {
+  sectionHasOptions(type: string) {
     const section = find(this.sectionTypes, { value: type });
     if (section) {
       return !!section.options;
@@ -340,7 +286,7 @@ export default class Template extends Vue {
     return false;
   }
 
-  private sectionName(type: string) {
+  sectionName(type: string) {
     const section = find(this.sectionTypes, { value: type });
     if (section) {
       return section.text;
@@ -348,7 +294,7 @@ export default class Template extends Vue {
     return type;
   }
 
-  private sectionIcon(type: string) {
+  sectionIcon(type: string) {
     const section = find(this.sectionTypes, { value: type });
     if (section) {
       return section.icon;
@@ -356,7 +302,7 @@ export default class Template extends Vue {
     return type;
   }
 
-  private sectionSize(size: string) {
+  sectionSize(size: string) {
     const section = find(this.sectionSizes, { value: size });
     if (section) {
       return section.text;
@@ -364,46 +310,42 @@ export default class Template extends Vue {
     return size || 'Full';
   }
 
-  private setAttribute(item, prop, value) {
+  setAttribute(item: TemplateAttributeData, prop: string, value: string | number) {
     item[prop] = value;
     this.$store.commit('session/setTemplateAttribute', item);
   }
 
-  private setSection(item, prop, value) {
+  setSection(item: TemplateSectionData, prop: string, value: string | number) {
     item[prop] = value;
     this.$store.commit('session/setTemplateSection', item);
   }
 
-  private doShowAttributeOptions(item) {
+  doShowAttributeOptions(item: TemplateAttributeData) {
     this.currentAttribute = cloneDeep(item);
     if (this.currentAttribute.type === 'options' && !this.currentAttribute.data) {
-      this.$set(this.currentAttribute, 'data', {
+      this.currentAttribute.data = {
         mulit: false,
-        items: []
-      });
+        options: [],
+      };
     }
-
-    this.temp = {};
     this.showAttributeOptions = true;
   }
 
-  private doShowSectionOptions(item) {
+  doShowSectionOptions(item: TemplateSectionData) {
     this.currentSection = cloneDeep(item);
     if (this.currentSection.type === 'datatable' && !this.currentSection.data) {
-      this.$set(this.currentSection, 'data', {
-        cols: []
-      });
+      this.currentSection.data = {
+        cols: [],
+      };
     }
-
-    this.temp = {};
     this.showSectionOptions = true;
   }
 
-  private toggleHeader(item) {
+  toggleHeader(item: TemplateSectionData) {
     if (item.header === 1) {
-      item.header = 2
+      item.header = 2;
     } else {
-      item.header = 1
+      item.header = 1;
     }
     this.$store.commit('session/setTemplateSection', item);
   }

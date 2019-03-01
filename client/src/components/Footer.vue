@@ -29,36 +29,36 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class Footer extends Vue {
   // Computed Properties
-  get isDocumentPage () {
+  get isDocumentPage() {
     return this.$store.state.route.name === 'document';
   }
 
-  get isTemplatePage () {
+  get isTemplatePage() {
     return this.$store.state.route.name === 'template';
   }
 
-  get  documentCreatedAt () {
+  get  documentCreatedAt() {
     if (this.$store.state.session.document) {
       return moment(this.$store.state.session.document.createdAt).format('YYYY-MM-DD');
     }
     return '';
   }
 
-  get  documentUpdatedAt () {
+  get  documentUpdatedAt() {
     if (this.$store.state.session.document) {
       return moment(this.$store.state.session.document.updatedAt).format('YYYY-MM-DD');
     }
     return '';
   }
 
-  get  templateCreatedAt () {
+  get  templateCreatedAt() {
     if (this.$store.state.session.template) {
       return moment(this.$store.state.session.template.createdAt).format('YYYY-MM-DD');
     }
     return '';
   }
 
-  get  templateUpdatedAt () {
+  get  templateUpdatedAt() {
     if (this.$store.state.session.template) {
       return moment(this.$store.state.session.template.updatedAt).format('YYYY-MM-DD');
     }

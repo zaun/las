@@ -110,7 +110,7 @@ export default class Header extends Vue {
     return this.$store.state.route.name === 'template';
   }
 
-  private get documentTemplateID () {
+  private get documentTemplateID() {
     if (this.$store.state.session.document) {
       return this.$store.state.session.document.template;
     }
@@ -148,7 +148,7 @@ export default class Header extends Vue {
     this.$emit('show-upload-media');
     this.$store.dispatch('media/post', {
       title: 'test',
-      mimeType: 'image/jpeg'
+      mimeType: 'image/jpeg',
     });
   }
 

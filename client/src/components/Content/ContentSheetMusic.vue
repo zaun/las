@@ -34,12 +34,12 @@ export default class ContentText extends Vue {
   public disabled!: boolean;
   @Prop()
   public value!: string;
-  
+
   // Methods
   private onInput(newValue: string) {
     this.$emit('input', newValue);
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

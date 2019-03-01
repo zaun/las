@@ -53,7 +53,7 @@ export default class Document extends Vue {
   private get template() {
     return this.$store.state.session.template;
   }
-  
+
   @Watch('$route', { immediate: true, deep: true })
   private fetchDocuments() {
     this.$store.dispatch('session/loadDocument', this.$route.params.title).then((ok) => {
