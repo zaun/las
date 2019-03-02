@@ -1,3 +1,4 @@
+const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const util = require('./util');
 
@@ -252,6 +253,27 @@ exports.handler = (event, context, callback) => {
           done(405, `Method Not Allowed: ${route.method}`);
         }
         break;  
+
+      case '/TOKEN/:TYPE':
+        if (route.method === 'GET' && route.parms.type === 'mapkit') {
+          if (!process.env.kid || !process.env.iss || !process.env.key) {
+            done(401, `Missing key file environment variable(s)`);
+            return;
+          }
+          const buff = new Buffer(process.env.key, 'base64')
+          const privateKey = buff.toString('ascii');
+          const token = jwt.sign({
+            'exp': Math.floor(Date.now() / 1000) + (60 * 30), // 30 min.
+            'kid': process.env.kid,
+            'iss': process.env.iss,
+            'origin': event.local === true ? 'http://localhost:8080' : 'NO'
+          }, privateKey, { algorithm: 'ES256'});
+          done(200, token);
+        } else {
+          done(405, `Method Not Allowed: ${route.method}`);
+        }
+        break;  
+  
 
       default:
         done(400, `Bad Request: ${route.resource}`);

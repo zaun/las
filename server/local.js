@@ -61,7 +61,8 @@ const API_ROUTES = [
   '/media',
   '/search',
   '/template',
-  '/template/:name'
+  '/template/:name',
+  '/token/:type'
 ];
 
 // https://kennbrodhagen.net/2015/12/02/how-to-access-http-headers-using-aws-api-gateway-and-lambda/
@@ -69,6 +70,7 @@ API_ROUTES.forEach((route) => {
   app.all(route, (req, res) => {
     process.stdout.write(`??? ${req.method} ${req.originalUrl}`);
     lambda.handler({
+      local: true,
       resource: route,
       headers: req.headers,
       httpMethod: req.method,

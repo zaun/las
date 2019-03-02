@@ -29,6 +29,16 @@ Parameters:
     AllowedValues: 
       - 'Yes'
       - 'No'
+  MapID:
+    Type: String
+    Description: A 10-character key identifier (Map ID)
+  MapTeam:
+    Type: String
+    Description: This key's value is your 10-character Team ID
+  MapKey:
+    Type: String
+    NoEcho: true
+    Description: Base64 of your private key file
 
 Conditions: 
   CreateCognitoResources: !Equals [ !Ref IncludeCognito, 'Yes' ]
@@ -338,6 +348,11 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       Runtime: nodejs8.10
       Timeout: 30
+      Environment:
+        Variables:
+          kid: !Ref MapID
+          iss: !Ref MapTeam
+          key: !Ref MapKey
  
   APIGateway:
     Type: AWS::ApiGateway::RestApi
@@ -556,6 +571,8 @@ Resources:
       EmailConfiguration: 
         ReplyToEmailAddress: 'nobody@notreal.com'
       MfaConfiguration: 'OFF'
+      AutoVerifiedAttributes:
+        - email
       Policies: 
         PasswordPolicy:
           MinimumLength: 8
