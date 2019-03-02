@@ -2,6 +2,13 @@
   .spacer.my-3.pb-2.px-5(v-if="template === 'spacer'")
     v-divider
 
+  AttributeAddress(v-else-if="template === 'address'"
+                  :label="label"
+                  :disabled="disabled"
+                  :readonly="readonly"
+                  :value="value"
+                  @input="onInput")
+
   AttributeArmedForces(v-else-if="template === 'aremedforces'"
                   :label="label"
                   :disabled="disabled"
@@ -66,6 +73,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import AttributeAddress from '@/components/Attribute/AttributeAddress.vue';
 import AttributeCountry from '@/components/Attribute/AttributeCountry.vue';
 import AttributeDate from '@/components/Attribute/AttributeDate.vue';
 import AttributeDuration from '@/components/Attribute/AttributeDuration.vue';
@@ -77,6 +85,7 @@ import AttributeArmedForces from '@/components/Attribute/AttributeArmedForces.vu
 
 @Component({
   components: {
+    AttributeAddress,
     AttributeArmedForces,
     AttributeCountry,
     AttributeDate,

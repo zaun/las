@@ -2,9 +2,10 @@
   v-container.content(fill-height)
     v-layout(v-if="document != null && template != null" wrap)
       v-flex.sidebar(xs12 md3)
-        section(v-for="attribute in template.attributes")
-          //- | {{ attribute }} '{{ attribueValue(attribute.id) }}'
-          Attribute(v-if="attribute.data || !attribute.deprecated" :type="attribute.type" :label="attribute.name" :data="attribute.data" :readonly="!isEditMode" :value="attribueValue(attribute.id)" @input="setAttribute(attribute.id, $event)")
+        form(autocomplete="off")
+          section(v-for="attribute in template.attributes")
+            //- | {{ attribute }} '{{ attribueValue(attribute.id) }}'
+            Attribute(v-if="attribute.data || !attribute.deprecated" :type="attribute.type" :label="attribute.name" :data="attribute.data" :readonly="!isEditMode" :value="attribueValue(attribute.id)" @input="setAttribute(attribute.id, $event)")
 
       v-flex.content.pl-3(xs12 md9)
         div(v-if="!isEditMode")

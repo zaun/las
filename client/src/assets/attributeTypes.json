@@ -1,5 +1,10 @@
 [
   {
+    "text": "Address",
+    "value": "address",
+    "icon": "mdi-map-marker"
+  },
+  {
     "text": "Date",
     "value": "date",
     "icon": "mdi-calendar"
