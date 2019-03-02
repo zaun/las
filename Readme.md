@@ -1,3 +1,10 @@
+## Running locally
+
+For maps to work properly you must profide a `MapKitJS_AuthKey.p8` file in the server directory. This is private for each developer an is in the `.gitignore` file so it will
+never be added to the repo. You will also have to update the `runLocal.sh` with your KID and ISS see [here](https://developer.apple.com/documentation/mapkitjs/creating_and_using_tokens_with_mapkit_js) for more information about MapKitJS.
+
+   cd server
+   ./runLocal
 
 ## To Do List for MVP
 

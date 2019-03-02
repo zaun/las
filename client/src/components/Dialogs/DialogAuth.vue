@@ -182,13 +182,13 @@ export default class DialogAuth extends Vue {
     this.showConfirmError = false;
     this.showRegisterError = false;
     if (this.$refs.signInForm) {
-      (this.$refs.signInForm as HTMLFormElement).reset();
+      (<HTMLFormElement>this.$refs.signInForm).reset();
     }
     if (this.$refs.registerForm) {
-      (this.$refs.signInForm as HTMLFormElement).reset();
+      (<HTMLFormElement>this.$refs.signInForm).reset();
     }
     if (this.$refs.confirmForm) {
-      (this.$refs.signInForm as HTMLFormElement).reset();
+      (<HTMLFormElement>this.$refs.signInForm).reset();
     }
   }
 

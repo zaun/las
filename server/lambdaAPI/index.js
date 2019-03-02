@@ -260,8 +260,9 @@ exports.handler = (event, context, callback) => {
             done(401, `Missing key file environment variable(s)`);
             return;
           }
-          const buff = new Buffer(process.env.key, 'base64')
+          const buff = new Buffer.all(process.env.key.length, process.env.key, 'base64')
           const privateKey = buff.toString('ascii');
+          console.log(1, process.env.key, privateKey);
           const token = jwt.sign({
             'exp': Math.floor(Date.now() / 1000) + (60 * 30), // 30 min.
             'kid': process.env.kid,

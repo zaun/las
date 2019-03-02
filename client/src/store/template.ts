@@ -21,6 +21,10 @@ export const actions: ActionTree<APIState, RootState> = {
   },
 
   list(context, data) {
+    if (!data) {
+      return Promise.resolve([]);
+    }
+
     return new Promise((resolve, reject) => {
       axios.get(`${context.state.server}/template/?q=${data}`).then((result) => {
         resolve(result.data);
