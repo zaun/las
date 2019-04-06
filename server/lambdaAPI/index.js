@@ -1,5 +1,6 @@
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const libbase64 = require('libbase64');
 const util = require('./util');
 
 const document = require('./api/document');
@@ -256,20 +257,26 @@ exports.handler = (event, context, callback) => {
 
       case '/TOKEN/:TYPE':
         if (route.method === 'GET' && route.parms.type === 'mapkit') {
-          if (!process.env.kid || !process.env.iss || !process.env.key) {
-            done(401, `Missing key file environment variable(s)`);
+          if (!process.env.applekeyid || !process.env.appleteamid || !process.env.applekey) {
+            done(500, `Missing key file environment variable(s)`);
             return;
           }
-          const buff = new Buffer.all(process.env.key.length, process.env.key, 'base64')
-          const privateKey = buff.toString('ascii');
-          console.log(1, process.env.key, privateKey);
-          const token = jwt.sign({
-            'exp': Math.floor(Date.now() / 1000) + (60 * 30), // 30 min.
-            'kid': process.env.kid,
-            'iss': process.env.iss,
-            'origin': event.local === true ? 'http://localhost:8080' : 'NO'
-          }, privateKey, { algorithm: 'ES256'});
-          done(200, token);
+
+          jwt.sign({
+            // origin: event.local === true ? 'https://zaun.github.io' : 'NO'
+            origin: event.local === true ? 'http://localhost:8082' : 'NO'
+          }, libbase64.decode(process.env.applekey), {
+            keyid: process.env.applekeyid,
+            issuer: process.env.appleteamid,
+            expiresIn: '4m',
+            algorithm: 'ES256',
+          }, (err, token) => {
+            if (err) {
+              done(500, err);
+            } else {
+              done(200, { token });
+            }
+          });
         } else {
           done(405, `Method Not Allowed: ${route.method}`);
         }
